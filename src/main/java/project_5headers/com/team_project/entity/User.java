@@ -1,35 +1,17 @@
 package project_5headers.com.team_project.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.Builder;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "users")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 @Builder
 public class User {
-
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
-
-    @Column(nullable = false, unique = true)
+    private Integer userId;
     private String username;
-
-    @Column(nullable = false)
-    private String password;
-
-    @Column(nullable = false, unique = true)
     private String email;
-
-    @CreationTimestamp
-    private LocalDateTime createAt;
-
+    private String password;
+    private LocalDateTime createDt;
+    private LocalDateTime updateDt;
 }
