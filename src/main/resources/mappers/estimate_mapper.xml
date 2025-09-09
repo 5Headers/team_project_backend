@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="project_5headers.com.team_project.mapper.EstimateMapper">
+
+
+    <!-- 컬럼 매핑 -->
+    <resultMap id="EstimateResultMap" type="project_5headers.com.team_project.entity.Estimate">
+        <id property="estimateId" column="estimate_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="title" column="title"/>
+        <result property="purpose" column="purpose"/>
+        <result property="budget" column="budget"/>
+        <result property="totalPrice" column="total_price"/>
+        <result property="bookmarkCount" column="bookmark_count"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <!-- INSERT -->
+    <insert id="insertEstimate" parameterType="project_5headers.com.team_project.entity.Estimate">
+        INSERT INTO estimate_tb (
+        user_id, title, purpose, budget, total_price, bookmark_count, created_at, updated_at
+        ) VALUES (
+        #{userId}, #{title}, #{purpose}, #{budget}, #{totalPrice}, 0, NOW(), NULL
+        )
+    </insert>
+
+    <!-- SELECT by ID -->
+    <select id="selectEstimateById" resultMap="EstimateResultMap">
+        SELECT * FROM estimate_tb
+        WHERE estimate_id = #{estimateId}
+    </select>
+
+    <!-- SELECT All -->
+    <select id="selectAllEstimates" resultMap="EstimateResultMap">
+        SELECT * FROM estimate_tb
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- UPDATE -->
+    <update id="updateEstimate" parameterType="project_5headers.com.team_project.entity.Estimate">
+        UPDATE estimate_tb
+        SET title = #{title},
+        purpose = #{purpose},
+        budget = #{budget},
+        total_price = #{totalPrice},
+        updated_at = NOW()
+        WHERE estimate_id = #{estimateId}
+    </update>
+
+    <!-- DELETE -->
+    <delete id="deleteEstimate" parameterType="int">
+        DELETE FROM estimate_tb
+        WHERE estimate_id = #{estimateId}
+    </delete>
+
+</mapper>
