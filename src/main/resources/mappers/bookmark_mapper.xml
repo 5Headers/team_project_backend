@@ -1,0 +1,26 @@
+<mapper namespace="project_5headers.com.team_project.mapper.BookmarkMapper">
+
+    <resultMap id="BookmarkResultMap" type="project_5headers.com.team_project.entity.Bookmark">
+        <id property="bookmarkId" column="bookmark_id"/>
+        <result property="estimateId" column="estimate_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createDt" column="create_dt"/>
+    </resultMap>
+
+    <insert id="addBookmark">
+        INSERT INTO bookmark_tb (estimate_id, user_id, create_dt)
+        VALUES (#{estimateId}, #{userId}, NOW())
+    </insert>
+
+    <select id="getBookmarkById" resultMap="BookmarkResultMap">
+        SELECT * FROM bookmark_tb WHERE bookmark_id = #{bookmarkId}
+    </select>
+
+    <select id="getBookmarksByUserId" resultMap="BookmarkResultMap">
+        SELECT * FROM bookmark_tb WHERE user_id = #{userId} ORDER BY create_dt DESC
+    </select>
+
+    <delete id="removeBookmarkById">
+        DELETE FROM bookmark_tb WHERE bookmark_id = #{bookmarkId}
+    </delete>
+</mapper>

@@ -5,8 +5,6 @@
 
 <mapper namespace="project_5headers.com.team_project.mapper.EstimateMapper">
 
-
-    <!-- 컬럼 매핑 -->
     <resultMap id="EstimateResultMap" type="project_5headers.com.team_project.entity.Estimate">
         <id property="estimateId" column="estimate_id"/>
         <result property="userId" column="user_id"/>
@@ -19,29 +17,20 @@
         <result property="updatedAt" column="updated_at"/>
     </resultMap>
 
-    <!-- INSERT -->
-    <insert id="insertEstimate" parameterType="project_5headers.com.team_project.entity.Estimate">
-        INSERT INTO estimate_tb (
-        user_id, title, purpose, budget, total_price, bookmark_count, created_at, updated_at
-        ) VALUES (
-        #{userId}, #{title}, #{purpose}, #{budget}, #{totalPrice}, 0, NOW(), NULL
-        )
+    <insert id="addEstimate">
+        INSERT INTO estimate_tb (user_id, title, purpose, budget, total_price, bookmark_count, created_at)
+        VALUES (#{userId}, #{title}, #{purpose}, #{budget}, #{totalPrice}, 0, NOW())
     </insert>
 
-    <!-- SELECT by ID -->
-    <select id="selectEstimateById" resultMap="EstimateResultMap">
-        SELECT * FROM estimate_tb
-        WHERE estimate_id = #{estimateId}
+    <select id="getEstimateById" resultMap="EstimateResultMap">
+        SELECT * FROM estimate_tb WHERE estimate_id = #{estimateId}
     </select>
 
-    <!-- SELECT All -->
-    <select id="selectAllEstimates" resultMap="EstimateResultMap">
-        SELECT * FROM estimate_tb
-        ORDER BY created_at DESC
+    <select id="getEstimateList" resultMap="EstimateResultMap">
+        SELECT * FROM estimate_tb ORDER BY created_at DESC
     </select>
 
-    <!-- UPDATE -->
-    <update id="updateEstimate" parameterType="project_5headers.com.team_project.entity.Estimate">
+    <update id="updateEstimate">
         UPDATE estimate_tb
         SET title = #{title},
         purpose = #{purpose},
@@ -51,10 +40,8 @@
         WHERE estimate_id = #{estimateId}
     </update>
 
-    <!-- DELETE -->
-    <delete id="deleteEstimate" parameterType="int">
-        DELETE FROM estimate_tb
-        WHERE estimate_id = #{estimateId}
+    <delete id="removeEstimateById">
+        DELETE FROM estimate_tb WHERE estimate_id = #{estimateId}
     </delete>
 
 </mapper>

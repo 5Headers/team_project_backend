@@ -1,20 +1,17 @@
 package project_5headers.com.team_project.mapper;
 
-import org.apache.ibatis.annotations.Mapper;
 import project_5headers.com.team_project.entity.Estimate;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 import java.util.Optional;
 
-
 @Mapper
-
 public interface EstimateMapper {
-    int insertEstimate(Estimate estimate);
-    Optional<Estimate> selectEstimateById(int estimateId);
-    List<Estimate> selectAllEstimate();
+
+    int addEstimate(Estimate estimate);
+    Optional<Estimate> getEstimateById(Integer estimateId);
+    List<Estimate> getEstimateList();
     int updateEstimate(Estimate estimate);
-    int deleteEstimate(int estimateId);
-
-
+    int removeEstimateById(Integer estimateId);
 }

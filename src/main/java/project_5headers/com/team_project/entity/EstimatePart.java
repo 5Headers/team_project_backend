@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class Estimate_part {
+public class EstimatePart {
     private Integer estimatePartId;
     private Integer estimateId;
     private String category;
