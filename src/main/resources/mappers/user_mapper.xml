@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="project_5headers.com.team_project.mapper.UserMapper">
+
+    <resultMap id="UserResultMap" type="project_5headers.com.team_project.entity.User">
+        <id property="userId" column="user_id"/>
+        <result property="username" column="username"/>
+        <result property="email" column="email"/>
+        <result property="password" column="password"/>
+        <result property="createDt" column="create_dt"/>
+        <result property="updateDt" column="update_dt"/>
+    </resultMap>
+
+    <insert id="addUser">
+        INSERT INTO user_tb (username, email, password, create_dt)
+        VALUES (#{username}, #{email}, #{password}, NOW())
+    </insert>
+
+    <select id="getUserById" resultMap="UserResultMap">
+        SELECT * FROM user_tb WHERE user_id = #{userId}
+    </select>
+
+    <select id="getUserByEmail" resultMap="UserResultMap">
+        SELECT * FROM user_tb WHERE email = #{email}
+    </select>
+
+    <select id="getUserList" resultMap="UserResultMap">
+        SELECT * FROM user_tb ORDER BY create_dt DESC
+    </select>
+
+    <update id="updateUser">
+        UPDATE user_tb
+        SET username = #{username},
+        email = #{email},
+        password = #{password},
+        update_dt = NOW()
+        WHERE user_id = #{userId}
+    </update>
+
+    <delete id="removeUserById">
+        DELETE FROM user_tb WHERE user_id = #{userId}
+    </delete>
+
+</mapper>
