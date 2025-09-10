@@ -2,10 +2,12 @@ package project_5headers.com.team_project.dto;
 
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class UserResponseDto {
 
     private Long id;

@@ -1,13 +1,14 @@
 package project_5headers.com.team_project.dto;
 
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class LoginRequestDto {
-
     private String username;
     private String password;
 
