@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import project_5headers.com.team_project.dto.UserRequestDto;
 import project_5headers.com.team_project.dto.UserResponseDto;
 import project_5headers.com.team_project.entity.User;
-import project_5headers.com.team_project.repositoy.UserRepository;
+import project_5headers.com.team_project.repository.UserRepository;
 
 @Service
 public class AccountService {
