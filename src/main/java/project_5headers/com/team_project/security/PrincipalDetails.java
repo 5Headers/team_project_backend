@@ -1,4 +1,4 @@
-package project_5headers.com.team_project.sequrity;
+package project_5headers.com.team_project.security;
 
 
 import project_5headers.com.team_project.entity.User;
