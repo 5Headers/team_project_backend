@@ -15,18 +15,21 @@ public class BookmarkRepository {
     private BookmarkMapper bookmarkMapper;
 
     public int addBookmark(Bookmark bookmark){
+
         return bookmarkMapper.addBookmark(bookmark);
     }
 
     public Optional<Bookmark> getBookmarkById(Integer bookmarkId){
-        return bookmarkMapper.getBookmarkById(bookmarkId);
+        return Optional.ofNullable(bookmarkMapper.getBookmarkById(bookmarkId));
     }
 
     public List<Bookmark> getBookmarksByUserId(Integer userId){
+
         return bookmarkMapper.getBookmarksByUserId(userId);
     }
 
     public int removeBookmarkById(Integer bookmarkId){
+
         return bookmarkMapper.removeBookmarkById(bookmarkId);
     }
 }

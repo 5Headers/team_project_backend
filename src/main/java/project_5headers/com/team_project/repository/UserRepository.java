@@ -1,9 +1,10 @@
 package project_5headers.com.team_project.repository;
 
+import project_5headers.com.team_project.entity.User;
 
-import org.springframework.stereotype.Repository;
+import java.util.Optional;
 
-@Repository
-public class UserRepository {
-    // Repository 수정 예정 9/11
+public interface UserRepository {
+    User save(User user);
+    Optional<User> findByUsername(String username);
 }
