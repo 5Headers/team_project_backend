@@ -9,10 +9,27 @@ import java.util.Optional;
 @Mapper
 public interface UserMapper {
 
+    // 사용자 추가
     int addUser(User user);
-    Optional<User> getUserById(Integer userId);
+
+    // userId로 사용자 조회
+    Optional<User> getUserByUserId(Integer userId);
+
+    // email로 사용자 조회
     Optional<User> getUserByEmail(String email);
+
+    // username으로 사용자 조회
+    Optional<User> getUserByUsername(String username);
+
+    // 전체 사용자 조회
     List<User> getUserList();
+
+    // 사용자 정보 수정
     int updateUser(User user);
+
+    // 비밀번호 변경
+    int updatePassword(User user);
+
+    // 사용자 삭제
     int removeUserById(Integer userId);
 }

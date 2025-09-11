@@ -12,6 +12,7 @@ public interface EstimateMapper {
     int addEstimate(Estimate estimate);
     Optional<Estimate> getEstimateById(Integer estimateId);
     List<Estimate> getEstimateList();
+    List<Estimate> getEstimatesByUserId(Integer userId);
     int updateEstimate(Estimate estimate);
     int removeEstimateById(Integer estimateId);
 }

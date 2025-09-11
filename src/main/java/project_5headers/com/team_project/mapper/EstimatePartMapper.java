@@ -11,7 +11,7 @@ public interface EstimatePartMapper {
 
     int addEstimatePart(EstimatePart estimatePart);
     Optional<EstimatePart> getEstimatePartById(Integer estimatePartId);
-    List<EstimatePart> getPartsByEstimateId(Integer estimateId);
+    List<EstimatePart> getEstimatePartsByEstimateId(Integer estimateId);
     int updateEstimatePart(EstimatePart estimatePart);
     int removeEstimatePartById(Integer estimatePartId);
 }
