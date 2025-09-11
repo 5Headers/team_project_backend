@@ -12,6 +12,7 @@ public interface ProductMapper {
     int addProduct(Product product);
     Optional<Product> getProductById(Integer productId);
     List<Product> getProductsByEstimateId(Integer estimateId);
+    List<Product> getProductsByCategory(String category);
     int updateProduct(Product product);
     int removeProductById(Integer productId);
 }

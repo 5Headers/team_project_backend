@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
 <mapper namespace="project_5headers.com.team_project.mapper.EstimateMapper">
 
     <resultMap id="EstimateResultMap" type="project_5headers.com.team_project.entity.Estimate">
@@ -17,7 +15,7 @@
         <result property="updatedAt" column="updated_at"/>
     </resultMap>
 
-    <insert id="addEstimate">
+    <insert id="addEstimate" parameterType="project_5headers.com.team_project.entity.Estimate">
         INSERT INTO estimate_tb (user_id, title, purpose, budget, total_price, bookmark_count, created_at)
         VALUES (#{userId}, #{title}, #{purpose}, #{budget}, #{totalPrice}, 0, NOW())
     </insert>
@@ -30,18 +28,18 @@
         SELECT * FROM estimate_tb ORDER BY created_at DESC
     </select>
 
+    <select id="getEstimatesByUserId" resultMap="EstimateResultMap">
+        SELECT * FROM estimate_tb WHERE user_id = #{userId} ORDER BY created_at DESC
+    </select>
+
     <update id="updateEstimate">
         UPDATE estimate_tb
-        SET title = #{title},
-        purpose = #{purpose},
-        budget = #{budget},
-        total_price = #{totalPrice},
-        updated_at = NOW()
+        SET title = #{title}, purpose = #{purpose}, budget = #{budget},
+        total_price = #{totalPrice}, updated_at = NOW()
         WHERE estimate_id = #{estimateId}
     </update>
 
     <delete id="removeEstimateById">
         DELETE FROM estimate_tb WHERE estimate_id = #{estimateId}
     </delete>
-
 </mapper>

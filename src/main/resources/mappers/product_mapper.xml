@@ -30,6 +30,10 @@
         SELECT * FROM product_tb WHERE estimate_id = #{estimateId}
     </select>
 
+    <select id="getProductsByCategory" resultMap="ProductResultMap">
+        SELECT * FROM product_tb WHERE category = #{category}
+    </select>
+
     <update id="updateProduct">
         UPDATE
         product_tb
