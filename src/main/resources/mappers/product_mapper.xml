@@ -30,16 +30,23 @@
         SELECT * FROM product_tb WHERE estimate_id = #{estimateId}
     </select>
 
+    <select id="getProductsByCategory" resultMap="ProductResultMap">
+        SELECT * FROM product_tb WHERE category = #{category}
+    </select>
+
     <update id="updateProduct">
-        UPDATE product_tb
-        SET name = #{name},
+        UPDATE
+        product_tb
+        SET
+        name = #{name},
         category = #{category},
         online_price = #{onlinePrice},
         online_link = #{onlineLink},
         offline_price = #{offlinePrice},
         offline_store = #{offlineStore},
         offline_link = #{offlineLink}
-        WHERE product_id = #{productId}
+        WHERE
+        product_id = #{productId}
     </update>
 
     <delete id="removeProductById">

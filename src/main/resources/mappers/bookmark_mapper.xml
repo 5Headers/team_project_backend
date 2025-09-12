@@ -1,3 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="project_5headers.com.team_project.mapper.BookmarkMapper">
 
     <resultMap id="BookmarkResultMap" type="project_5headers.com.team_project.entity.Bookmark">
@@ -23,4 +26,5 @@
     <delete id="removeBookmarkById">
         DELETE FROM bookmark_tb WHERE bookmark_id = #{bookmarkId}
     </delete>
+
 </mapper>
