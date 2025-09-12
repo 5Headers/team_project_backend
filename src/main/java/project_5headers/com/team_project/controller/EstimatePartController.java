@@ -9,40 +9,47 @@ import project_5headers.com.team_project.service.EstimatePartService;
 import java.util.List;
 import java.util.Optional;
 
-
 @RestController
-@RequestMapping("/estimate-parts")
+@RequestMapping("/estimate-part")
 public class EstimatePartController {
 
     @Autowired
-    private EstimatePartService service;
+    private EstimatePartService estimatePartService;
 
-    @PostMapping
-    public EstimatePart addPart(@RequestBody EstimatePart part) {
-        return service.addPart(part);
+    // 부품 추가
+    @PostMapping("/add")
+    public ResponseEntity<?> addEstimatePart(@RequestBody EstimatePart estimatePart) {
+        return ResponseEntity.ok(estimatePartService.addEstimatePart(estimatePart));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<EstimatePart> getPart(@PathVariable Integer id) {
-        return service.getPartById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    // ID로 부품 조회
+    @GetMapping("/{estimatePartId}")
+    public ResponseEntity<?> getEstimatePartById(@PathVariable Integer estimatePartId) {
+        Optional<EstimatePart> part = estimatePartService.getEstimatePartById(estimatePartId);
+        return part.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/estimate/{estimateId}")
-    public List<EstimatePart> getPartsByEstimate(@PathVariable Integer estimateId) {
-        return service.getPartsByEstimate(estimateId);
+    // 견적 ID로 부품 목록 조회
+    @GetMapping("/list/{estimateId}")
+    public ResponseEntity<?> getPartsByEstimateId(@PathVariable Integer estimateId) {
+        List<EstimatePart> parts = estimatePartService.getPartsByEstimateId(estimateId);
+        return ResponseEntity.ok(parts);
     }
 
-    @PutMapping
-    public EstimatePart updatePart(@RequestBody EstimatePart part) {
-        return service.updatePart(part);
+    // 부품 수정
+    @PostMapping("/update")
+    public ResponseEntity<?> updateEstimatePart(@RequestBody EstimatePart estimatePart) {
+        return ResponseEntity.ok(estimatePartService.updateEstimatePart(estimatePart));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> removePart(@PathVariable Integer id) {
-        service.removePart(id);
-        return ResponseEntity.noContent().build();
+    // 부품 삭제
+    @PostMapping("/remove/{estimatePartId}")
+    public ResponseEntity<?> removeEstimatePart(@PathVariable Integer estimatePartId) {
+        boolean deleted = estimatePartService.removeEstimatePartById(estimatePartId);
+        if (deleted) {
+            return ResponseEntity.ok("삭제 성공");
+        } else {
+            return ResponseEntity.badRequest().body("삭제 실패");
+        }
     }
-
 }

@@ -1,7 +1,5 @@
 package project_5headers.com.team_project.service;
 
-
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import project_5headers.com.team_project.entity.EstimatePart;
@@ -14,39 +12,32 @@ import java.util.Optional;
 public class EstimatePartService {
 
     @Autowired
-    private EstimatePartRepository repository;
+    private EstimatePartRepository estimatePartRepository;
 
-    // -----------부품 추가하기--------------
-    public EstimatePart addPart(EstimatePart part) {
-        repository.addEstimatePart(part);
-        return part;
+    // 부품 추가
+    public EstimatePart addEstimatePart(EstimatePart estimatePart) {
+        estimatePartRepository.addEstimatePart(estimatePart);
+        return estimatePart;
     }
 
-    // -----------단일 부품 추가하기--------------
-    public Optional<EstimatePart> getPartById(Integer partId) {
-        return repository.getEstimatePartById(partId);
+    // ID로 부품 조회
+    public Optional<EstimatePart> getEstimatePartById(Integer estimatePartId) {
+        return estimatePartRepository.getEstimatePartById(estimatePartId);
     }
 
-    // -----------특정 견적 부품 전체 조회하기--------------
-    public List<EstimatePart> getPartsByEstimate(Integer estimateId) {
-        return repository.getPartsByEstimateId(estimateId);
+    // 견적 ID로 부품 목록 조회
+    public List<EstimatePart> getPartsByEstimateId(Integer estimateId) {
+        return estimatePartRepository.getPartsByEstimateId(estimateId);
     }
 
-    // -----------부품 수정하기--------------
-    public EstimatePart updatePart(EstimatePart part) {
-        repository.updateEstimatePart(part);
-        return part;
+    // 부품 수정
+    public EstimatePart updateEstimatePart(EstimatePart estimatePart) {
+        estimatePartRepository.updateEstimatePart(estimatePart);
+        return estimatePart;
     }
 
-    // -----------부품 삭제하기--------------
-    public void removePart(Integer partId) {
-        repository.removeEstimatePartById(partId);
+    // 부품 삭제
+    public boolean removeEstimatePartById(Integer estimatePartId) {
+        return estimatePartRepository.removeEstimatePartById(estimatePartId) > 0;
     }
-
-    // -----------추가 로직 예시: 특정 견적의 전체 가격 합계--------------
-    public int getTotalPriceByEstimate(Integer estimateId) {
-        List<EstimatePart> parts = repository.getPartsByEstimateId(estimateId);
-        return parts.stream().mapToInt(EstimatePart::getPrice).sum();
-    }
-
 }
