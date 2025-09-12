@@ -6,8 +6,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import project_5headers.com.team_project.dto.AuthResponseDto;
 import project_5headers.com.team_project.dto.LoginRequestDto;
-import project_5headers.com.team_project.dto.UserRequestDto;
-import project_5headers.com.team_project.dto.UserResponseDto;
 import project_5headers.com.team_project.entity.User;
 import project_5headers.com.team_project.repository.UserRepository;
 
@@ -22,7 +20,7 @@ public class AuthService {
 
     public AuthResponseDto login(LoginRequestDto request) {
         // 사용자 조회
-        User user = userRepository.findByUsername(request.getUsername())
+        User user = userRepository.getUserByUsername(request.getUsername())
                 // userRepository 수정 중으로 findByUsername도 수정할 예정입니다 (9/11)
 
 
