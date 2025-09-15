@@ -2,6 +2,7 @@ package project_5headers.com.team_project.controller;
 
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +19,8 @@ import project_5headers.com.team_project.service.AuthService;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+
+    @Autowired
     private  AuthService authService;
 
     @GetMapping("/principal")

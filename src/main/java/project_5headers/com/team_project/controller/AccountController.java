@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project_5headers.com.team_project.dto.ApiRespDto;
-import project_5headers.com.team_project.dto.auth.SigninReqDto;
-import project_5headers.com.team_project.dto.auth.SignupReqDto;
 import project_5headers.com.team_project.dto.account.ChangePasswordReqDto;
 import project_5headers.com.team_project.security.model.PrincipalUser;
 import project_5headers.com.team_project.service.AccountService;

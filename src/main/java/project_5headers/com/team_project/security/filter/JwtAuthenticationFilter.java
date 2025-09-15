@@ -33,13 +33,14 @@ public class JwtAuthenticationFilter implements Filter {
 
         HttpServletRequest request = (HttpServletRequest) servletRequest;
 
-        // 필터 적용 HTTP 메서드 제한 (선택사항)
-        List<String> methods = List.of("POST", "GET", "PUT", "PATCH", "DELETE");
-        if (!methods.contains(request.getMethod())) {
+        // 회원가입/로그인 요청은 JWT 검증 제외
+        String path = request.getRequestURI();
+        if (path.startsWith("/auth/signup") || path.startsWith("/auth/signin")) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
 
+        // 기존 JWT 검증 로직
         String authorization = request.getHeader("Authorization");
 
         if (jwtUtils.isBearer(authorization)) {
@@ -54,7 +55,6 @@ public class JwtAuthenticationFilter implements Filter {
                     Optional<User> optionalUser = userRepository.getUserByUserId(userId);
 
                     optionalUser.ifPresentOrElse(user -> {
-                        // PrincipalUser 생성
                         PrincipalUser principalUser = PrincipalUser.builder()
                                 .userId(user.getUserId())
                                 .username(user.getUsername())
@@ -63,7 +63,6 @@ public class JwtAuthenticationFilter implements Filter {
                                 .userRoles(user.getUserRoles() != null ? user.getUserRoles() : List.of())
                                 .build();
 
-                        // Authentication 객체 생성 및 SecurityContextHolder 등록
                         UsernamePasswordAuthenticationToken authentication =
                                 new UsernamePasswordAuthenticationToken(
                                         principalUser,
@@ -79,11 +78,9 @@ public class JwtAuthenticationFilter implements Filter {
                 }
             } catch (RuntimeException e) {
                 e.printStackTrace();
-                // 필요 시 인증 실패 처리 가능 (로그, 응답 상태 등)
             }
         }
 
-        // 다음 필터 체인으로 전달
         filterChain.doFilter(servletRequest, servletResponse);
     }
 }
