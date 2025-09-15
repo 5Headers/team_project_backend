@@ -18,19 +18,7 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
-    // 회원가입
-    @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody SignupReqDto signupReqDto) {
-        ApiRespDto<?> response = accountService.signup(signupReqDto);
-        return ResponseEntity.ok(response);
-    }
 
-    // 로그인
-    @PostMapping("/signin")
-    public ResponseEntity<?> signin(@RequestBody SigninReqDto signinReqDto) {
-        ApiRespDto<?> response = accountService.signin(signinReqDto);
-        return ResponseEntity.ok(response);
-    }
 
     // 비밀번호 변경
     @PostMapping("/change/password")

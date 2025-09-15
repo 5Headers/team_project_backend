@@ -22,35 +22,6 @@ public class AccountService {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    // 회원가입
-    public ApiRespDto<?> signup(SignupReqDto dto) {
-        User user = dto.toEntity(bCryptPasswordEncoder);
-        Optional<User> savedUser = userRepository.addUser(user);
-
-        if (savedUser.isEmpty()) {
-            return new ApiRespDto<>("failed", "이미 존재하는 사용자입니다.", null);
-        }
-
-        return new ApiRespDto<>("success", "회원가입이 완료되었습니다.", savedUser.get());
-    }
-
-    // 로그인
-    public ApiRespDto<?> signin(SigninReqDto dto) {
-        Optional<User> userOpt = userRepository.getUserByUsername(dto.getUsername());
-
-        if (userOpt.isEmpty()) {
-            return new ApiRespDto<>("failed", "사용자가 존재하지 않습니다.", null);
-        }
-
-        User user = userOpt.get();
-
-        if (!bCryptPasswordEncoder.matches(dto.getPassword(), user.getPassword())) {
-            return new ApiRespDto<>("failed", "비밀번호가 일치하지 않습니다.", null);
-        }
-
-        // 로그인 성공 시, PrincipalUser 등 토큰 생성 로직 필요 시 추가
-        return new ApiRespDto<>("success", "로그인 성공", user);
-    }
 
     // 비밀번호 변경
     public ApiRespDto<?> changePassword(ChangePasswordReqDto dto, PrincipalUser principalUser) {

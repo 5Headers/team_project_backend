@@ -1,27 +1,46 @@
 package project_5headers.com.team_project.controller;
 
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+
 import project_5headers.com.team_project.dto.ApiRespDto;
-import project_5headers.com.team_project.dto.AuthResponseDto;
-import project_5headers.com.team_project.dto.LoginRequestDto;
+import project_5headers.com.team_project.dto.auth.SigninReqDto;
+import project_5headers.com.team_project.dto.auth.SignupReqDto;
+import project_5headers.com.team_project.security.model.PrincipalUser;
 import project_5headers.com.team_project.service.AuthService;
 
 
-@RequiredArgsConstructor
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+    private  AuthService authService;
 
-    private final AuthService authService;
-
-    @PostMapping("/login")
-    public ApiRespDto<AuthResponseDto> login(@RequestBody LoginRequestDto request) {
-        AuthResponseDto token = authService.login(request);
-        return new ApiRespDto<>("success", "로그인 성공", token);
+    @GetMapping("/principal")
+    public ResponseEntity<?>getPrincipal(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        PrincipalUser principalUser = (PrincipalUser) authentication.getPrincipal();
+        ApiRespDto<?> apiRespDto = new ApiRespDto<>("success", "", principalUser);
+        return ResponseEntity.ok(apiRespDto);
     }
+
+    // 회원가입
+    @PostMapping("/signup")
+    public ResponseEntity<?> signup(@RequestBody SignupReqDto signupReqDto) {
+        ApiRespDto<?> response = authService.signup(signupReqDto);
+        return ResponseEntity.ok(response);
+    }
+
+    // 로그인
+    @PostMapping("/signin")
+    public ResponseEntity<?> signin(@RequestBody SigninReqDto signinReqDto) {
+        ApiRespDto<?> response = authService.signin(signinReqDto);
+        return ResponseEntity.ok(response);
+    }
+
+
 }
