@@ -1,4 +1,4 @@
-package project_5headers.com.team_project.repositoy;
+package project_5headers.com.team_project.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import project_5headers.com.team_project.entity.User;

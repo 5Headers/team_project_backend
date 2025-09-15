@@ -11,10 +11,10 @@ import java.util.Optional;
 
 public interface EstimateMapper {
     int insertEstimate(Estimate estimate);
-    Optional<Estimate> selectEstimateById(int estimateId);
+    Optional<Estimate> selectEstimateById(Integer estimateId);
     List<Estimate> selectAllEstimate();
     int updateEstimate(Estimate estimate);
-    int deleteEstimate(int estimateId);
+    int deleteEstimate(Integer estimateId);
 
 
 }
