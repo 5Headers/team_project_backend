@@ -21,8 +21,8 @@
     </resultMap>
 
     <insert id="addUserRole" useGeneratedKeys="true" keyProperty="userRoleId">
-        INSERT INTO user_role_tb (user_role_id, user_id, role_id, create_dt, update_dt)
-        VALUES (0, #{userId}, #{roleId}, NOW(), NULL)
+        INSERT INTO user_role_tb (user_id, role_id, create_dt, update_dt)
+        VALUES (#{userId}, #{roleId}, NOW(), NULL)
     </insert>
 
     <select id="getUserRoleByUserIdAndRoleId" resultMap="UserRoleResultMap">

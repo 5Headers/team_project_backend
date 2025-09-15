@@ -14,7 +14,7 @@
         <result property="updateDt" column="update_dt"/>
     </resultMap>
 
-    <insert id="addUser">
+    <insert id="addUser" useGeneratedKeys="true" keyProperty="userId">
         INSERT INTO user_tb (username, email, password, create_dt)
         VALUES (#{username}, #{email}, #{password}, NOW())
     </insert>
