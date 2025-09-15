@@ -25,6 +25,7 @@
         VALUES (#{userId}, #{roleId}, NOW(), NULL)
     </insert>
 
+
     <select id="getUserRoleByUserIdAndRoleId" resultMap="UserRoleResultMap">
         SELECT
         urt.user_role_id,

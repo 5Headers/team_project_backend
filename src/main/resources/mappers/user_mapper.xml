@@ -19,7 +19,8 @@
         VALUES (#{username}, #{email}, #{password}, NOW())
     </insert>
 
-<!--    <select id="getUserById" resultMap="UserResultMap">-->
+
+    <!--    <select id="getUserById" resultMap="UserResultMap">-->
     <select id="getUserByUserId" resultMap="UserResultMap">
         SELECT * FROM user_tb WHERE user_id = #{userId}
     </select>
