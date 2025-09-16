@@ -22,7 +22,7 @@ public class ChatGPTService {
                 .defaultHeader("Authorization", "Bearer " + apiKey)
                 .defaultHeader("Content-Type", "application/json")
                 .build();
-
+        System.out.println("API KEY: " + apiKey);
         Map<String, Object> message = new HashMap<>();
         message.put("role", "user");
         message.put("content", prompt);
