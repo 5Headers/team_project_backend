@@ -3,7 +3,6 @@ package project_5headers.com.team_project.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import project_5headers.com.team_project.dto.ApiRespDto;
 import project_5headers.com.team_project.entity.Bookmark;
 import project_5headers.com.team_project.service.BookmarkService;
 import project_5headers.com.team_project.security.model.PrincipalUser;
