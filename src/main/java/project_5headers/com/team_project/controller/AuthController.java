@@ -45,5 +45,16 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    //아이디 중복
+    @GetMapping("/check-username")
+    public ResponseEntity<?> checkUsername(@RequestParam String username) {
+        return ResponseEntity.ok(authService.checkUsername(username));
+    }
+
+    //이메일 중복
+    @GetMapping("/check-email")
+    public ResponseEntity<?> checkEmail(@RequestParam String email) {
+        return ResponseEntity.ok(authService.checkEmail(email));
+    }
 
 }
