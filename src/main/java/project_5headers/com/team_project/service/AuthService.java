@@ -42,6 +42,8 @@ public class AuthService {
         if (optionalUserByUsername.isPresent()) {
             return new ApiRespDto<>("failed", "이미 사용중인 아이디입니다.", null);
         }
+        ApiRespDto<String> usernameAvailableResp = new ApiRespDto<>("success", "사용 가능한 아이디입니다.", null);
+
 
         // 이메일 중복 체크
         Optional<User> optionalUserByEmail = userRepository.getUserByEmail(signupReqDto.getEmail());
