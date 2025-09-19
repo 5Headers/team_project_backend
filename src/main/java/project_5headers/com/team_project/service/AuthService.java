@@ -33,6 +33,25 @@ public class AuthService {
     private JwtUtils jwtUtils;
 
 
+    // 아이디 중복 확인
+    public ApiRespDto<?> checkUsername(String username) {
+        Optional<User> optionalUserByUsername = userRepository.getUserByUsername(username);
+        if (optionalUserByUsername.isPresent()) {
+            return new ApiRespDto<>("failed", "이미 사용중인 아이디입니다.", null);
+        }
+        return new ApiRespDto<>("success", "사용 가능한 아이디입니다.", null);
+    }
+
+    // 이메일 중복 확인
+    public ApiRespDto<?> checkEmail(String email) {
+        Optional<User> optionalUserByEmail = userRepository.getUserByEmail(email);
+        if (optionalUserByEmail.isPresent()) {
+            return new ApiRespDto<>("failed", "이미 사용중인 이메일입니다.", null);
+        }
+        return new ApiRespDto<>("success", "사용 가능한 이메일입니다.", null);
+    }
+
+
     // 회원가입
     @Transactional(rollbackFor = Exception.class)
     public ApiRespDto<?> signup(SignupReqDto signupReqDto) {
