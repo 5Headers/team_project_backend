@@ -85,6 +85,31 @@
         LEFT JOIN role_tb r ON urt.role_id = r.role_id
         WHERE u.email = #{email}
     </select>
+    <!-- User + Roles 조회 by userId -->
+    <select id="getUserByUserId" resultMap="UserResultMap">
+        SELECT
+        u.user_id,
+        u.username,
+        u.email,
+        u.password,
+        u.create_dt,
+        u.update_dt,
+
+        urt.user_role_id,
+        urt.user_id AS urt_user_id,
+        urt.role_id AS urt_role_id,
+        urt.create_dt AS urt_create_dt,
+        urt.update_dt AS urt_update_dt,
+
+        r.role_id,
+        r.role_name,
+        r.role_name_kor
+        FROM user_tb u
+        LEFT JOIN user_role_tb urt ON u.user_id = urt.user_id
+        LEFT JOIN role_tb r ON urt.role_id = r.role_id
+        WHERE u.user_id = #{userId}
+    </select>
+
 
     <!-- User 비밀번호 변경 -->
     <update id="updatePassword">
