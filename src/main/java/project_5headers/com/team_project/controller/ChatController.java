@@ -2,16 +2,19 @@ package project_5headers.com.team_project.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 import project_5headers.com.team_project.dto.ApiRespDto;
-import project_5headers.com.team_project.service.ChatGPTService;
+import project_5headers.com.team_project.service.ChatGptService;
 
 @RestController
 @RequestMapping("/chat")
+@Service
+
 public class ChatController {
 
     @Autowired
-    private ChatGPTService chatGPTService;
+    private ChatGptService chatGPTService;
 
     @PostMapping("/estimate")
     public ResponseEntity<?> getEstimate(@RequestParam String cost, @RequestParam String purpose) {
