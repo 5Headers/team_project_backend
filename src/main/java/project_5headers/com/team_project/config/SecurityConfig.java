@@ -60,7 +60,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         // 회원가입, 로그인, GPT API는 인증 없이 접근 가능
-                        .requestMatchers("/auth/**,","/chat/**", "/mail/verify").permitAll()
+                        .requestMatchers("/auth/**","/chat/**", "/mail/verify").permitAll()
                         // 나머지는 JWT 인증 필요
                         .anyRequest().authenticated()
                 )
