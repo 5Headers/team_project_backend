@@ -2,9 +2,26 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
 <mapper namespace="project_5headers.com.team_project.mapper.UserMapper">
 
+    <!-- Role 매핑 -->
+    <resultMap id="RoleResultMap" type="project_5headers.com.team_project.entity.Role">
+        <id property="roleId" column="role_id"/>
+        <result property="roleName" column="role_name"/>
+        <result property="roleNameKor" column="role_name_kor"/>
+    </resultMap>
+
+    <!-- UserRole 매핑 -->
+    <resultMap id="UserRoleResultMap" type="project_5headers.com.team_project.entity.UserRole">
+        <id property="userRoleId" column="user_role_id"/>
+        <result property="userId" column="urt_user_id"/>
+        <result property="roleId" column="urt_role_id"/>
+        <result property="createDt" column="urt_create_dt"/>
+        <result property="updateDt" column="urt_update_dt"/>
+        <association property="role" resultMap="RoleResultMap"/>
+    </resultMap>
+
+    <!-- User + Roles 매핑 -->
     <resultMap id="UserResultMap" type="project_5headers.com.team_project.entity.User">
         <id property="userId" column="user_id"/>
         <result property="username" column="username"/>
@@ -12,24 +29,89 @@
         <result property="password" column="password"/>
         <result property="createDt" column="create_dt"/>
         <result property="updateDt" column="update_dt"/>
+        <collection property="userRoles" resultMap="UserRoleResultMap"/>
     </resultMap>
 
+    <!-- User 추가 -->
     <insert id="addUser" useGeneratedKeys="true" keyProperty="userId">
         INSERT INTO user_tb (username, email, password, create_dt)
         VALUES (#{username}, #{email}, #{password}, NOW())
     </insert>
 
-    <!--    <select id="getUserById" resultMap="UserResultMap">-->
-    <select id="getUserByUserId" resultMap="UserResultMap">
-        SELECT * FROM user_tb WHERE user_id = #{userId}
-    </select>
-
-    <!-- 기존 XML에는 없어서 Repository의 getUserByUsername 호출시 오류 발생하여 추가함 -->
+    <!-- User + Roles 조회 by username -->
     <select id="getUserByUsername" resultMap="UserResultMap">
-        SELECT * FROM user_tb WHERE username = #{username}
+        SELECT
+        u.user_id,
+        u.username,
+        u.email,
+        u.password,
+        u.create_dt,
+        u.update_dt,
+
+        urt.user_role_id,
+        urt.user_id AS urt_user_id,
+        urt.role_id AS urt_role_id,
+        urt.create_dt AS urt_create_dt,
+        urt.update_dt AS urt_update_dt,
+
+        r.role_id,
+        r.role_name,
+        r.role_name_kor
+        FROM user_tb u
+        LEFT JOIN user_role_tb urt ON u.user_id = urt.user_id
+        LEFT JOIN role_tb r ON urt.role_id = r.role_id
+        WHERE u.username = #{username}
+    </select>
+    <select id="getUserByEmail" resultMap="UserResultMap">
+        SELECT
+        u.user_id,
+        u.username,
+        u.email,
+        u.password,
+        u.create_dt,
+        u.update_dt,
+
+        urt.user_role_id,
+        urt.user_id AS urt_user_id,
+        urt.role_id AS urt_role_id,
+        urt.create_dt AS urt_create_dt,
+        urt.update_dt AS urt_update_dt,
+
+        r.role_id,
+        r.role_name,
+        r.role_name_kor
+        FROM user_tb u
+        LEFT JOIN user_role_tb urt ON u.user_id = urt.user_id
+        LEFT JOIN role_tb r ON urt.role_id = r.role_id
+        WHERE u.email = #{email}
+    </select>
+    <!-- User + Roles 조회 by userId -->
+    <select id="getUserByUserId" resultMap="UserResultMap">
+        SELECT
+        u.user_id,
+        u.username,
+        u.email,
+        u.password,
+        u.create_dt,
+        u.update_dt,
+
+        urt.user_role_id,
+        urt.user_id AS urt_user_id,
+        urt.role_id AS urt_role_id,
+        urt.create_dt AS urt_create_dt,
+        urt.update_dt AS urt_update_dt,
+
+        r.role_id,
+        r.role_name,
+        r.role_name_kor
+        FROM user_tb u
+        LEFT JOIN user_role_tb urt ON u.user_id = urt.user_id
+        LEFT JOIN role_tb r ON urt.role_id = r.role_id
+        WHERE u.user_id = #{userId}
     </select>
 
-    <!--    기존 XML에는 없어서 Repository의 changePassword 호출 시에 오류가 발생하여 추가함-->
+
+    <!-- User 비밀번호 변경 -->
     <update id="updatePassword">
         UPDATE user_tb
         SET password = #{password},
@@ -38,25 +120,5 @@
     </update>
 
 
-    <select id="getUserByEmail" resultMap="UserResultMap">
-        SELECT * FROM user_tb WHERE email = #{email}
-    </select>
-
-    <select id="getUserList" resultMap="UserResultMap">
-        SELECT * FROM user_tb ORDER BY create_dt DESC
-    </select>
-
-    <update id="updateUser">
-        UPDATE user_tb
-        SET username = #{username},
-        email = #{email},
-        password = #{password},
-        update_dt = NOW()
-        WHERE user_id = #{userId}
-    </update>
-
-    <delete id="removeUserById">
-        DELETE FROM user_tb WHERE user_id = #{userId}
-    </delete>
 
 </mapper>

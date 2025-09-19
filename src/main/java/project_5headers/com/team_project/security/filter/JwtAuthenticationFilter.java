@@ -33,14 +33,14 @@ public class JwtAuthenticationFilter implements Filter {
 
         HttpServletRequest request = (HttpServletRequest) servletRequest;
 
-        // 회원가입/로그인 요청은 JWT 검증 제외
-        String path = request.getRequestURI();
-        if (path.startsWith("/auth/signup") || path.startsWith("/auth/signin")) {
+        // ===== HTTP 메서드 체크 =====
+        List<String> methods = List.of("POST", "GET", "PUT", "PATCH", "DELETE");
+        if (!methods.contains(request.getMethod())) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
 
-        // 기존 JWT 검증 로직
+        // ===== JWT 검증 =====
         String authorization = request.getHeader("Authorization");
 
         if (jwtUtils.isBearer(authorization)) {
@@ -49,8 +49,7 @@ public class JwtAuthenticationFilter implements Filter {
             try {
                 if (jwtUtils.validateToken(accessToken)) {
                     Claims claims = jwtUtils.getClaims(accessToken);
-
-                    Integer userId = claims.get("userId", Integer.class);
+                    Integer userId = Integer.parseInt(claims.getId());
 
                     Optional<User> optionalUser = userRepository.getUserByUserId(userId);
 
