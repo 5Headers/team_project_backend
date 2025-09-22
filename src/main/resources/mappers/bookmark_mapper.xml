@@ -3,10 +3,17 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="project_5headers.com.team_project.mapper.BookmarkMapper">
 
+    <insert id="addBookmark">
+        INSERT INTO bookmark_tb (estimate_id, user_id, title, content, create_dt)
+        VALUES (#{estimateId}, #{userId}, #{title}, #{content}, NOW())
+    </insert>
+
     <resultMap id="BookmarkResultMap" type="project_5headers.com.team_project.entity.Bookmark">
         <id property="bookmarkId" column="bookmark_id"/>
         <result property="estimateId" column="estimate_id"/>
         <result property="userId" column="user_id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
         <result property="createDt" column="create_dt"/>
     </resultMap>
 
