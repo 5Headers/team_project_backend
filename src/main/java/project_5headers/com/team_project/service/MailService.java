@@ -74,6 +74,17 @@ public class MailService {
         return new ApiRespDto<>("success", "이메일 전송이 완료되었습니다.", null);
     }
 
+    public ApiRespDto<?> sendTemporaryPassword(SendMailReqDto dto, String tempPassword) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(dto.getEmail());
+        message.setSubject("[NuroPC] 임시 비밀번호 발급 안내");
+        message.setText("임시 비밀번호: " + tempPassword + "\n로그인 후 반드시 비밀번호를 변경해주세요.");
+
+        javaMailSender.send(message);
+
+        return new ApiRespDto<>("success", "임시 비밀번호 이메일 발송 완료", null);
+    }
+
     /**
      * 인증 링크 검증
      */

@@ -60,5 +60,10 @@ public class UserRepository {
     public int removeUserById(Integer userId) {
         return userMapper.removeUserById(userId);
     }
+    // 이름 + 이메일로 사용자 조회
+    public Optional<User> getUserByNameAndEmail(String name, String email) {
+        return userMapper.getUserByNameAndEmail(name, email);
+    }
+
 
 }
