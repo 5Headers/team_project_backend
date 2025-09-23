@@ -8,14 +8,12 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import project_5headers.com.team_project.entity.User;
 import project_5headers.com.team_project.repository.UserRepository;
 import project_5headers.com.team_project.security.jwt.JwtUtils;
 import project_5headers.com.team_project.security.model.PrincipalUser;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class JwtAuthenticationFilter implements Filter {
@@ -27,34 +25,27 @@ public class JwtAuthenticationFilter implements Filter {
     private UserRepository userRepository;
 
     @Override
-    public void doFilter(ServletRequest servletRequest,
-                         ServletResponse servletResponse,
-                         FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        HttpServletRequest req = (HttpServletRequest) request;
+        String path = req.getRequestURI();
 
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
-
-        // ===== HTTP 메서드 체크 =====
-        List<String> methods = List.of("POST", "GET", "PUT", "PATCH", "DELETE");
-        if (!methods.contains(request.getMethod())) {
-            filterChain.doFilter(servletRequest, servletResponse);
+        // 회원가입/로그인/챗봇 API와 OPTIONS는 인증 제외
+        if (path.startsWith("/auth/signup") || path.startsWith("/auth/signin") || path.startsWith("/chat") ||
+                "OPTIONS".equalsIgnoreCase(req.getMethod())) {
+            chain.doFilter(request, response);
             return;
         }
 
-        // ===== JWT 검증 =====
-        String authorization = request.getHeader("Authorization");
-
-        if (jwtUtils.isBearer(authorization)) {
-            String accessToken = jwtUtils.removeBearer(authorization);
-
+        String authHeader = req.getHeader("Authorization");
+        if (jwtUtils.isBearer(authHeader)) {
+            String token = jwtUtils.removeBearer(authHeader);
             try {
-                if (jwtUtils.validateToken(accessToken)) {
-                    Claims claims = jwtUtils.getClaims(accessToken);
-                    Integer userId = Integer.parseInt(claims.getId());
+                if (jwtUtils.validateToken(token)) {
+                    Claims claims = jwtUtils.getClaims(token);
+                    Integer userId = claims.get("userId", Integer.class);
 
-                    Optional<User> optionalUser = userRepository.getUserByUserId(userId);
-
-                    optionalUser.ifPresentOrElse(user -> {
-                        PrincipalUser principalUser = PrincipalUser.builder()
+                    userRepository.getUserByUserId(userId).ifPresentOrElse(user -> {
+                        PrincipalUser principal = PrincipalUser.builder()
                                 .userId(user.getUserId())
                                 .username(user.getUsername())
                                 .password(user.getPassword())
@@ -63,12 +54,7 @@ public class JwtAuthenticationFilter implements Filter {
                                 .build();
 
                         UsernamePasswordAuthenticationToken authentication =
-                                new UsernamePasswordAuthenticationToken(
-                                        principalUser,
-                                        null,
-                                        principalUser.getAuthorities()
-                                );
-
+                                new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
                         SecurityContextHolder.getContext().setAuthentication(authentication);
 
                     }, () -> {
@@ -80,6 +66,6 @@ public class JwtAuthenticationFilter implements Filter {
             }
         }
 
-        filterChain.doFilter(servletRequest, servletResponse);
+        chain.doFilter(request, response);
     }
 }

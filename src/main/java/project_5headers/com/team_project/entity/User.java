@@ -12,6 +12,7 @@ import java.util.List;
 public class User {
     private Integer userId;
     private String username;
+    private String name;
     private String email;
     private String password;
     private LocalDateTime createDt;

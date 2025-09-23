@@ -10,13 +10,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class SignupReqDto {
 
     private String username;
+    private String name;
     private String password;
     private String email;
+
 
     // User 엔티티로 변환
     public User toEntity(BCryptPasswordEncoder bCryptPasswordEncoder) {
         return User.builder()
                 .username(username)
+                .name(name)
                 .password(bCryptPasswordEncoder.encode(password))
                 .email(email)
                 .build();
