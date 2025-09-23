@@ -42,7 +42,10 @@ public class JwtAuthenticationFilter implements Filter {
             try {
                 if (jwtUtils.validateToken(token)) {
                     Claims claims = jwtUtils.getClaims(token);
-                    Integer userId = claims.get("userId", Integer.class);
+
+                    // 토큰에서 ID 가져오기
+                    String userIdStr = claims.getId(); // AccessToken 생성 시 setId(userId)로 넣었으므로 getId()로 꺼냄
+                    Integer userId = Integer.valueOf(userIdStr);
 
                     userRepository.getUserByUserId(userId).ifPresentOrElse(user -> {
                         PrincipalUser principal = PrincipalUser.builder()
@@ -61,6 +64,7 @@ public class JwtAuthenticationFilter implements Filter {
                         throw new AuthenticationServiceException("사용자를 찾을 수 없습니다.");
                     });
                 }
+
             } catch (RuntimeException e) {
                 e.printStackTrace();
             }
