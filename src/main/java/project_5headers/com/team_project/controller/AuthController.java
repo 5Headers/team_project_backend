@@ -43,6 +43,7 @@ public class AuthController {
     public ResponseEntity<?> signin(@RequestBody SigninReqDto signinReqDto) {
         ApiRespDto<?> response = authService.signin(signinReqDto);
         return ResponseEntity.ok(response);
+
     }
 
     //아이디 중복
