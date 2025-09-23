@@ -11,6 +11,7 @@ import java.util.Map;
 
 public class ChatGptService {
 
+
     @Value("${openai.api-key}")
     private String apiKey;
 
