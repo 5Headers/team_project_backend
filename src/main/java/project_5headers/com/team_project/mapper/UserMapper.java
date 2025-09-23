@@ -21,6 +21,10 @@ public interface UserMapper {
     // username으로 사용자 조회
     Optional<User> getUserByUsername(String username);
 
+
+    // 이름 + 이메일로 사용자 조회
+    Optional<User> getUserByNameAndEmail(String name, String email);
+
     // 전체 사용자 조회
     List<User> getUserList();
 
@@ -32,4 +36,6 @@ public interface UserMapper {
 
     // 사용자 삭제
     int removeUserById(Integer userId);
+
+
 }

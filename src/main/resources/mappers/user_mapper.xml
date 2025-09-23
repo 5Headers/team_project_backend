@@ -25,6 +25,7 @@
     <resultMap id="UserResultMap" type="project_5headers.com.team_project.entity.User">
         <id property="userId" column="user_id"/>
         <result property="username" column="username"/>
+        <result property="name" column="name"/>
         <result property="email" column="email"/>
         <result property="password" column="password"/>
         <result property="createDt" column="create_dt"/>
@@ -34,26 +35,73 @@
 
     <!-- User 추가 -->
     <insert id="addUser" useGeneratedKeys="true" keyProperty="userId">
-        INSERT INTO user_tb (username, email, password, create_dt)
-        VALUES (#{username}, #{email}, #{password}, NOW())
+        INSERT INTO user_tb (username, name, email, password, create_dt)
+        VALUES (#{username}, #{name}, #{email}, #{password}, NOW())
     </insert>
 
-    <!-- User + Roles 조회 by userId -->
-    <select id="getUserByUserId" resultMap="UserResultMap">
+    <!-- User 조회 by username -->
+    <select id="getUserByUsername" resultMap="UserResultMap">
         SELECT
         u.user_id,
         u.username,
+        u.name,
         u.email,
         u.password,
         u.create_dt,
         u.update_dt,
-
         urt.user_role_id,
         urt.user_id AS urt_user_id,
         urt.role_id AS urt_role_id,
         urt.create_dt AS urt_create_dt,
         urt.update_dt AS urt_update_dt,
+        r.role_id,
+        r.role_name,
+        r.role_name_kor
+        FROM user_tb u
+        LEFT JOIN user_role_tb urt ON u.user_id = urt.user_id
+        LEFT JOIN role_tb r ON urt.role_id = r.role_id
+        WHERE u.username = #{username}
+    </select>
 
+    <!-- User 조회 by email -->
+    <select id="getUserByEmail" resultMap="UserResultMap">
+        SELECT
+        u.user_id,
+        u.username,
+        u.name,
+        u.email,
+        u.password,
+        u.create_dt,
+        u.update_dt,
+        urt.user_role_id,
+        urt.user_id AS urt_user_id,
+        urt.role_id AS urt_role_id,
+        urt.create_dt AS urt_create_dt,
+        urt.update_dt AS urt_update_dt,
+        r.role_id,
+        r.role_name,
+        r.role_name_kor
+        FROM user_tb u
+        LEFT JOIN user_role_tb urt ON u.user_id = urt.user_id
+        LEFT JOIN role_tb r ON urt.role_id = r.role_id
+        WHERE u.email = #{email}
+    </select>
+
+    <!-- User 조회 by userId -->
+    <select id="getUserByUserId" resultMap="UserResultMap">
+        SELECT
+        u.user_id,
+        u.username,
+        u.name,
+        u.email,
+        u.password,
+        u.create_dt,
+        u.update_dt,
+        urt.user_role_id,
+        urt.user_id AS urt_user_id,
+        urt.role_id AS urt_role_id,
+        urt.create_dt AS urt_create_dt,
+        urt.update_dt AS urt_update_dt,
         r.role_id,
         r.role_name,
         r.role_name_kor
@@ -63,81 +111,39 @@
         WHERE u.user_id = #{userId}
     </select>
 
-    <!-- User + Roles 조회 by username -->
-    <select id="getUserByUsername" resultMap="UserResultMap">
+    <!-- User 전체 조회 -->
+    <select id="getUserList" resultMap="UserResultMap">
         SELECT
         u.user_id,
         u.username,
+        u.name,
         u.email,
         u.password,
         u.create_dt,
         u.update_dt,
-
         urt.user_role_id,
         urt.user_id AS urt_user_id,
         urt.role_id AS urt_role_id,
         urt.create_dt AS urt_create_dt,
         urt.update_dt AS urt_update_dt,
-
         r.role_id,
         r.role_name,
         r.role_name_kor
         FROM user_tb u
         LEFT JOIN user_role_tb urt ON u.user_id = urt.user_id
         LEFT JOIN role_tb r ON urt.role_id = r.role_id
-        WHERE u.username = #{username}
-    </select>
-    <select id="getUserByEmail" resultMap="UserResultMap">
-        SELECT
-        u.user_id,
-        u.username,
-        u.email,
-        u.password,
-        u.create_dt,
-        u.update_dt,
-
-        urt.user_role_id,
-        urt.user_id AS urt_user_id,
-        urt.role_id AS urt_role_id,
-        urt.create_dt AS urt_create_dt,
-        urt.update_dt AS urt_update_dt,
-
-        r.role_id,
-        r.role_name,
-        r.role_name_kor
-        FROM user_tb u
-        LEFT JOIN user_role_tb urt ON u.user_id = urt.user_id
-        LEFT JOIN role_tb r ON urt.role_id = r.role_id
-        WHERE u.email = #{email}
     </select>
 
-
-
-    <select id="getUserByEmail" resultMap="UserResultMap">
-        SELECT
-        u.user_id,
-        u.username,
-        u.email,
-        u.password,
-        u.create_dt,
-        u.update_dt,
-
-        urt.user_role_id,
-        urt.user_id AS urt_user_id,
-        urt.role_id AS urt_role_id,
-        urt.create_dt AS urt_create_dt,
-        urt.update_dt AS urt_update_dt,
-
-        r.role_id,
-        r.role_name,
-        r.role_name_kor
-        FROM user_tb u
-        LEFT JOIN user_role_tb urt ON u.user_id = urt.user_id
-        LEFT JOIN role_tb r ON urt.role_id = r.role_id
-        WHERE u.email = #{email}
-    </select>
-
-
+    <!-- User 정보 수정 -->
+    <update id="updateUser">
+        UPDATE user_tb
+        SET
+        username = #{username},
+        name = #{name},
+        email = #{email},
+        update_dt = NOW()
+        WHERE user_id = #{userId}
+    </update>
 
     <!-- User 비밀번호 변경 -->
     <update id="updatePassword">
@@ -147,6 +153,37 @@
         WHERE user_id = #{userId}
     </update>
 
+    <!-- User 삭제 -->
+    <delete id="removeUserById">
+        DELETE FROM user_tb
+        WHERE user_id = #{userId}
+    </delete>
+
+    <!-- 이름 + 이메일로 사용자 조회 -->
+    <select id="getUserByNameAndEmail" resultMap="UserResultMap">
+        SELECT
+        u.user_id,
+        u.username,
+        u.name,
+        u.email,
+        u.password,
+        u.create_dt,
+        u.update_dt,
+
+        urt.user_role_id,
+        urt.user_id AS urt_user_id,
+        urt.role_id AS urt_role_id,
+        urt.create_dt AS urt_create_dt,
+        urt.update_dt AS urt_update_dt,
+
+        r.role_id,
+        r.role_name,
+        r.role_name_kor
+        FROM user_tb u
+        LEFT JOIN user_role_tb urt ON u.user_id = urt.user_id
+        LEFT JOIN role_tb r ON urt.role_id = r.role_id
+        WHERE u.name = #{name} AND u.email = #{email}
+    </select>
 
 
 </mapper>

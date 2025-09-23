@@ -103,4 +103,18 @@ public class UserService {
         return new ApiRespDto<>("success", "사용자가 삭제되었습니다.", null);
     }
 
+    // 이름 + 이메일로 아이디 찾기
+    public ApiRespDto<?> findUserIdByNameAndEmail(String name, String email) {
+        Optional<User> optionalUser = userRepository.getUserByNameAndEmail(name, email);
+        if (optionalUser.isEmpty()) {
+            return new ApiRespDto<>("failed", "사용자가 존재하지 않습니다.", null);
+        }
+
+        // username 반환
+        String username = optionalUser.get().getUsername();
+        return new ApiRespDto<>("success", "아이디 조회 성공", username);
+    }
+
+
+
 }

@@ -1,22 +1,28 @@
 package project_5headers.com.team_project.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import project_5headers.com.team_project.service.ChatService;
 import org.springframework.web.bind.annotation.*;
-import project_5headers.com.team_project.dto.ApiRespDto;
-import project_5headers.com.team_project.service.ChatGPTService;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/chat")
+@CrossOrigin(origins = {"http://localhost:3000","http://localhost:5173"})
 public class ChatController {
 
-    @Autowired
-    private ChatGPTService chatGPTService;
+    private final ChatService chatService;
+
+    public ChatController(ChatService chatService) {
+        this.chatService = chatService;
+    }
 
     @PostMapping("/estimate")
-    public ResponseEntity<?> getEstimate(@RequestParam String cost, @RequestParam String purpose) {
-        String prompt = "사용자의 컴퓨터 용도: " + purpose + ", 예산: " + cost + "원에 맞는 추천 견적을 알려줘.";
-        String result = chatGPTService.getChatGPTResponse(prompt);
-        return ResponseEntity.ok(new ApiRespDto<>("success", "견적 생성 완료", result));
+    public Map<String, String> estimate(@RequestBody Map<String, Object> payload) {
+        String purpose = (String) payload.get("purpose");
+        Integer cost = (Integer) payload.get("cost");
+        String title = (String) payload.getOrDefault("title", "제목 없음");
+        Integer userId = (Integer) payload.getOrDefault("userId", 1); // 로그인 구현 전 기본값
+
+        String response = chatService.askGPTAndSave(userId, title, purpose, cost);
+        return Map.of("data", response);
     }
 }
