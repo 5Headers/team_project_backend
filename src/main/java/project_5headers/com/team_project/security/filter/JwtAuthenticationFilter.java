@@ -30,7 +30,7 @@ public class JwtAuthenticationFilter implements Filter {
         String path = req.getRequestURI();
 
         // 회원가입/로그인/챗봇 API와 OPTIONS는 인증 제외
-        if (path.startsWith("/auth/signup") || path.startsWith("/auth/signin") || path.startsWith("/chat") ||
+        if (path.startsWith("/auth/signup") || path.startsWith("/auth/signin") ||
                 "OPTIONS".equalsIgnoreCase(req.getMethod())) {
             chain.doFilter(request, response);
             return;
