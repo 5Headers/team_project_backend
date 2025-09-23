@@ -28,7 +28,7 @@ public class AccountController {
         return ResponseEntity.ok(response);
     }
     //비밀번호 찾기
-    @PostMapping("/reset-password")
+    @PostMapping("/reset/password")
     public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordReqDto resetPasswordReqDto) {
         ApiRespDto<?> response = accountService.resetPassword(resetPasswordReqDto);
         return ResponseEntity.ok(response);
