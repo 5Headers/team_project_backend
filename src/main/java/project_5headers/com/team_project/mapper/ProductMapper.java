@@ -1,6 +1,5 @@
 package project_5headers.com.team_project.mapper;
 
-import project_5headers.com.team_project.entity.Product;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

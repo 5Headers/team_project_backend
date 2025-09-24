@@ -86,12 +86,15 @@ public class AccountService {
         return new ApiRespDto<>("success", "임시 비밀번호가 이메일로 발송되었습니다.", null);
     }
 
-    // 임시 비밀번호 생성 예시
+    // 임시 비밀번호 생성 (8~10자리 / 알파벳 + 숫자 + 특수문자)
     private String generateTempPassword() {
-        // 8~10자리 랜덤 알파벳 + 숫자
-        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[]{}<>?";
+
+        // 길이를 8~10 중에서 랜덤 선택
+        int length = 8 + (int) (Math.random() * 3); // 8, 9, 10 중 하나
+
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < length; i++) {
             int idx = (int) (Math.random() * chars.length());
             sb.append(chars.charAt(idx));
         }
