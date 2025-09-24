@@ -2,12 +2,14 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="project_5headers.com.team_project.mapper.EstimatePartMapper">
 
-
+    <!-- ResultMap -->
     <resultMap id="EstimatePartResultMap" type="project_5headers.com.team_project.entity.EstimatePart">
         <id property="estimatePartId" column="estimate_part_id"/>
         <result property="estimateId" column="estimate_id"/>
+        <result property="category" column="category"/>
         <result property="name" column="name"/>
         <result property="price" column="price"/>
         <result property="link" column="link"/>
@@ -15,21 +17,27 @@
         <result property="createdAt" column="created_at"/>
     </resultMap>
 
-    <insert id="addEstimatePart">
+    <!-- INSERT (자동 증가 PK 매핑) -->
+    <insert id="addEstimatePart"
+            parameterType="project_5headers.com.team_project.entity.EstimatePart"
+            useGeneratedKeys="true" keyProperty="estimatePartId" keyColumn="estimate_part_id">
         INSERT INTO estimate_part_tb
         (estimate_id, category, name, price, link, store_type, created_at)
         VALUES
-        (#{estimateId}, #{name}, #{price}, #{link}, #{storeType}, #{createdAt})
+        (#{estimateId}, #{category}, #{name}, #{price}, #{link}, #{storeType}, #{createdAt})
     </insert>
 
+    <!-- 단일 조회 -->
     <select id="getEstimatePartById" resultMap="EstimatePartResultMap">
         SELECT * FROM estimate_part_tb WHERE estimate_part_id = #{estimatePartId}
     </select>
 
-    <select id="getPartsByEstimateId" resultMap="EstimatePartResultMap">
+    <!-- 견적별 부품 조회 -->
+    <select id="getEstimatePartsByEstimateId" resultMap="EstimatePartResultMap">
         SELECT * FROM estimate_part_tb WHERE estimate_id = #{estimateId}
     </select>
 
+    <!-- 수정 -->
     <update id="updateEstimatePart">
         UPDATE estimate_part_tb
         SET category = #{category},
@@ -40,6 +48,7 @@
         WHERE estimate_part_id = #{estimatePartId}
     </update>
 
+    <!-- 삭제 -->
     <delete id="removeEstimatePartById">
         DELETE FROM estimate_part_tb WHERE estimate_part_id = #{estimatePartId}
     </delete>
