@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import project_5headers.com.team_project.entity.Estimate;
+import project_5headers.com.team_project.entity.EstimatePart;
 import project_5headers.com.team_project.repository.EstimateRepository;
+import project_5headers.com.team_project.repository.EstimatePartRepository;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -19,20 +21,23 @@ public class ChatService {
 
     private final WebClient webClient;
     private final EstimateRepository estimateRepository;
+    private final EstimatePartRepository estimatePartRepository;
 
-    public ChatService(WebClient.Builder builder, EstimateRepository estimateRepository) {
+    public ChatService(WebClient.Builder builder,
+                       EstimateRepository estimateRepository,
+                       EstimatePartRepository estimatePartRepository) {
         this.webClient = builder.baseUrl("https://api.openai.com/v1").build();
         this.estimateRepository = estimateRepository;
+        this.estimatePartRepository = estimatePartRepository;
     }
 
     public String askGPTAndSave(Integer userId, String title, String purpose, int cost) {
-
-        System.out.println("userId = " + userId);
         try {
-            // GPT 프롬프트
+            // ===== 1. GPT 프롬프트 =====
             String prompt = String.format(
                     "사용자가 %s 용도로 %d원 예산의 PC를 원합니다. "
-                            + "게임용 PC 추천 견적을 제공하고, 반드시 '총 가격은 ~원입니다' 형식으로 명시해주세요.",
+                            + "게임용 PC 추천 견적을 제공하고, 반드시 '총 가격은 ~원입니다' 형식으로 명시해주세요. "
+                            + "그리고 부품 리스트는 '**카테고리**: 제품명 - 가격원 ([링크](https://...))' 형식으로 작성해주세요.",
                     purpose, cost
             );
 
@@ -44,7 +49,7 @@ public class ChatService {
                     )
             );
 
-            // GPT 호출
+            // ===== 2. GPT 호출 =====
             Mono<Map> response = webClient.post()
                     .uri("/chat/completions")
                     .header("Authorization", "Bearer " + apiKey)
@@ -64,7 +69,7 @@ public class ChatService {
                 }
             }
 
-            // GPT 응답에서 총 가격 파싱
+            // ===== 3. 총 가격 파싱 =====
             int totalPrice = cost; // 기본값
             if (gptContent != null && !gptContent.isEmpty()) {
                 Pattern pattern = Pattern.compile("총\\s*가격.*?([0-9,]+)\\s*원");
@@ -75,19 +80,46 @@ public class ChatService {
                 }
             }
 
-            // DB 저장
+            // ===== 4. Estimate 저장 =====
             Estimate estimate = Estimate.builder()
                     .userId(userId)
                     .title(title)
                     .purpose(purpose)
                     .budget(cost)
-                    .totalPrice(totalPrice) // GPT에서 파싱한 총 가격 사용
+                    .totalPrice(totalPrice)
                     .bookmarkCount(0)
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
                     .build();
 
             estimateRepository.addEstimate(estimate);
+            Integer estimateId = estimate.getEstimateId(); // ✅ PK 자동 세팅 (useGeneratedKeys 필요)
+
+            // ===== 5. 부품 리스트 파싱 =====
+            // 예시: **CPU**: AMD Ryzen 7 5800X3D - 600,000원 ([링크](https://example.com))
+            Pattern partPattern = Pattern.compile(
+                    "\\*\\*(.*?)\\*\\*: (.*?) - ([0-9,]+)원 \\(\\[링크\\]\\((https?://[^)]+)\\)\\)"
+            );
+            Matcher matcher = partPattern.matcher(gptContent);
+
+            while (matcher.find()) {
+                String category = matcher.group(1).trim();
+                String name = matcher.group(2).trim();
+                int price = Integer.parseInt(matcher.group(3).replaceAll(",", ""));
+                String link = matcher.group(4).trim();
+
+                EstimatePart part = EstimatePart.builder()
+                        .estimateId(estimateId)
+                        .category(category)
+                        .name(name)
+                        .price(price)
+                        .link(link)
+                        .storeType("ONLINE")
+                        .createdAt(LocalDateTime.now())
+                        .build();
+
+                estimatePartRepository.addEstimatePart(part);
+            }
 
             return gptContent;
 
