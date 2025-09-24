@@ -12,6 +12,9 @@ import project_5headers.com.team_project.entity.User;
 import project_5headers.com.team_project.repository.UserRepository;
 import project_5headers.com.team_project.security.model.PrincipalUser;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -86,17 +89,46 @@ public class AccountService {
         return new ApiRespDto<>("success", "임시 비밀번호가 이메일로 발송되었습니다.", null);
     }
 
-    // 임시 비밀번호 생성 예시
+    // 임시 비밀번호 생성 (8~10자리 / 알파벳 + 숫자 + 특수문자 최소 1개 보장)
     private String generateTempPassword() {
-        // 8~10자리 랜덤 알파벳 + 숫자
-        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        String upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String lower = "abcdefghijklmnopqrstuvwxyz";
+        String digits = "0123456789";
+        String special = "!@#$%^&*?_";
+        String all = upper + lower + digits + special;
+
+        // 길이를 8~10 중 랜덤 선택
+        int length = 8 + (int) (Math.random() * 3);
+
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 10; i++) {
-            int idx = (int) (Math.random() * chars.length());
-            sb.append(chars.charAt(idx));
+
+        // 조건 충족을 위해 최소 1개씩 넣기
+        sb.append(upper.charAt((int) (Math.random() * upper.length())));
+        sb.append(lower.charAt((int) (Math.random() * lower.length())));
+        sb.append(digits.charAt((int) (Math.random() * digits.length())));
+        sb.append(special.charAt((int) (Math.random() * special.length())));
+
+        // 나머지 길이는 전체 문자에서 랜덤 선택
+        for (int i = sb.length(); i < length; i++) {
+            sb.append(all.charAt((int) (Math.random() * all.length())));
         }
-        return sb.toString();
+
+        // 랜덤 섞기 (조건으로 넣은 문자들이 앞쪽에 몰리지 않게)
+        List<Character> chars = new ArrayList<>();
+        for (char c : sb.toString().toCharArray()) {
+            chars.add(c);
+        }
+        Collections.shuffle(chars);
+
+        StringBuilder password = new StringBuilder();
+        for (char c : chars) {
+            password.append(c);
+        }
+
+        return password.toString();
     }
+
+
 
 
 
