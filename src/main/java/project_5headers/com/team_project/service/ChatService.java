@@ -1,5 +1,6 @@
 package project_5headers.com.team_project.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -15,6 +16,9 @@ import java.util.regex.*;
 
 @Service
 public class ChatService {
+
+    @Autowired
+    private NaverShoppingService naverShoppingService;
 
     @Value("${openai.api-key}")
     private String apiKey;
@@ -97,8 +101,9 @@ public class ChatService {
 
             // ===== 5. 부품 리스트 파싱 =====
             // 예시: **CPU**: AMD Ryzen 7 5800X3D - 600,000원 ([링크](https://example.com))
+            // ===== 5. 부품 리스트 파싱 =====
             Pattern partPattern = Pattern.compile(
-                    "\\*\\*(.*?)\\*\\*: (.*?) - ([0-9,]+)원 \\(\\[링크\\]\\((https?://[^)]+)\\)\\)"
+                    "\\*\\*(.*?)\\*\\*: (.*?) - ([0-9,]+)원"
             );
             Matcher matcher = partPattern.matcher(gptContent);
 
@@ -106,7 +111,9 @@ public class ChatService {
                 String category = matcher.group(1).trim();
                 String name = matcher.group(2).trim();
                 int price = Integer.parseInt(matcher.group(3).replaceAll(",", ""));
-                String link = matcher.group(4).trim();
+
+                // ✅ 네이버 링크 검색
+                String link = naverShoppingService.searchFirstProductLink(name);
 
                 EstimatePart part = EstimatePart.builder()
                         .estimateId(estimateId)
@@ -120,6 +127,7 @@ public class ChatService {
 
                 estimatePartRepository.addEstimatePart(part);
             }
+
 
             return gptContent;
 
