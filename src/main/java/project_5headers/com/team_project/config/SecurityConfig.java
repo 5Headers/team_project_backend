@@ -12,32 +12,35 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import project_5headers.com.team_project.security.filter.JwtAuthenticationFilter;
+import project_5headers.com.team_project.security.handler.OAuth2SuccessHandler;
+import project_5headers.com.team_project.service.OAuth2PrincipalUserService;
+
 
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final OAuth2PrincipalUserService oAuth2PrincipalUserService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
-    // ===== BCryptPasswordEncoder Bean 등록 =====
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // ===== CORS 설정 =====
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        // React 개발 서버 포트 5173도 허용
         corsConfiguration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:3000",
                 "http://localhost:5173"
         ));
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
+        corsConfiguration.setAllowedHeaders(List.of("*"));
         corsConfiguration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -45,26 +48,28 @@ public class SecurityConfig {
         return source;
     }
 
-
-    // ===== SecurityFilterChain 설정 =====
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.cors(cors -> cors.configurationSource(corsConfigurationSource())); // CORS 적용
-        http.csrf(csrf -> csrf.disable());
-        http.formLogin(formLogin -> formLogin.disable());
-        http.httpBasic(httpBasic -> httpBasic.disable());
-        http.logout(logout -> logout.disable());
-        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
+                .formLogin(formLogin -> formLogin.disable())
+                .httpBasic(httpBasic -> httpBasic.disable())
+                .logout(logout -> logout.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        http
-                .authorizeHttpRequests(auth -> auth
-                        // 회원가입, 로그인, GPT API는 인증 없이 접근 가능
-                        .requestMatchers("/auth/**","/chat/**","/estimate/**","/account/**").permitAll()
-                        // 나머지는 JWT 인증 필요
-                        .anyRequest().authenticated()
-                )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        http.authorizeHttpRequests(auth -> auth
+                .requestMatchers("/auth/**", "/chat/**", "/estimate/**", "/account/**", "/oauth2/**").permitAll()
+                .anyRequest().authenticated()
+        );
+
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2PrincipalUserService))
+                        .successHandler(oAuth2SuccessHandler)
+                );
 
         return http.build();
     }
 }
+
+
