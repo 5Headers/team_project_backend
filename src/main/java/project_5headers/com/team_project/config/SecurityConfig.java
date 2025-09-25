@@ -31,7 +31,6 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        // React 개발 서버 포트 5173도 허용
         corsConfiguration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:3000",
                 "http://localhost:5173"
@@ -45,11 +44,10 @@ public class SecurityConfig {
         return source;
     }
 
-
     // ===== SecurityFilterChain 설정 =====
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.cors(cors -> cors.configurationSource(corsConfigurationSource())); // CORS 적용
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
         http.csrf(csrf -> csrf.disable());
         http.formLogin(formLogin -> formLogin.disable());
         http.httpBasic(httpBasic -> httpBasic.disable());
@@ -58,8 +56,8 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(auth -> auth
-                        // 회원가입, 로그인, GPT API는 인증 없이 접근 가능
-                        .requestMatchers("/auth/**","/chat/**","/estimate/**","/account/**").permitAll()
+                        // ✅ maps API 추가 허용
+                        .requestMatchers("/auth/**", "/chat/**", "/estimate/**", "/account/**", "/api/maps/**").permitAll()
                         // 나머지는 JWT 인증 필요
                         .anyRequest().authenticated()
                 )
