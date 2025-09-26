@@ -57,7 +57,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         // ✅ maps API 추가 허용
-                        .requestMatchers("/auth/**", "/chat/**", "/estimate/**", "/account/**", "/api/maps/**").permitAll()
+                        .requestMatchers("/auth/**","/oauth2/**", "/chat/**", "/estimate/**", "/account/**", "/api/maps/**").permitAll()
                         // 나머지는 JWT 인증 필요
                         .anyRequest().authenticated()
                 )

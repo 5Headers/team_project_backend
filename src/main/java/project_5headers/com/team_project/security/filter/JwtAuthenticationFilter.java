@@ -38,6 +38,8 @@ public class JwtAuthenticationFilter implements Filter {
         if (path.startsWith("/auth/signup") ||
                 path.startsWith("/auth/signin") ||
                 path.startsWith("/api/maps") ||   // ✅ 지도 API는 토큰 검사 제외
+                path.startsWith("/oauth2/") ||    // ✅ OAuth2 로그인도 토큰 검사 제외
+                path.startsWith("/error") ||
                 "OPTIONS".equalsIgnoreCase(req.getMethod())) {
 
             System.out.println("✅ JwtAuthenticationFilter: 인증 제외 처리됨 → " + path);
