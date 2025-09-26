@@ -5,6 +5,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project_5headers.com.team_project.dto.ApiRespDto;
+import project_5headers.com.team_project.dto.auth.SignupReqDto;
 import project_5headers.com.team_project.entity.User;
 import project_5headers.com.team_project.repository.UserRepository;
 
@@ -22,11 +23,11 @@ public class UserService {
 
     // 새로운 사용자 추가
     @Transactional(rollbackFor = Exception.class)
-    public ApiRespDto<?> addUser(User user) {
+    public ApiRespDto<?> addUser(SignupReqDto signupReqDto) {
         // 비밀번호 암호화
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        System.out.println(signupReqDto.getName());
 
-        Optional<User> savedUser = userRepository.addUser(user);
+        Optional<User> savedUser = userRepository.addUser(signupReqDto.toEntity(bCryptPasswordEncoder));
         if (savedUser.isEmpty()) {
             return new ApiRespDto<>("failed", "이미 존재하는 사용자입니다.", null);
         }

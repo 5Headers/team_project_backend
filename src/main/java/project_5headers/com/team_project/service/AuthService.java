@@ -55,7 +55,6 @@ public class AuthService {
     // 회원가입
     @Transactional(rollbackFor = Exception.class)
     public ApiRespDto<?> signup(SignupReqDto signupReqDto) {
-
         // 아이디 중복 체크
         Optional<User> optionalUserByUsername = userRepository.getUserByUsername(signupReqDto.getUsername());
         if (optionalUserByUsername.isPresent()) {

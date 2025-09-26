@@ -64,6 +64,8 @@ public class OAuth2AuthService {
     @Transactional(rollbackFor = Exception.class)
     public ApiRespDto<?> signup(OAuth2SignupReqDto oAuth2SignupReqDto) {
 
+        System.out.println("요청옴");
+        System.out.println(oAuth2SignupReqDto.getName());
         Optional<User> userByUsername = userRepository.getUserByUsername(oAuth2SignupReqDto.getUsername());
         if (userByUsername.isPresent()) {
             return new ApiRespDto<>("failed", "이미 존재하는 아이디 입니다.", null);

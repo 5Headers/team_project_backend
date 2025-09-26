@@ -9,6 +9,7 @@ import project_5headers.com.team_project.entity.User;
 @Data
 public class OAuth2SignupReqDto {
     private String username;
+    private String name;
     private String password;
     private String email;
     private String provider;
@@ -17,6 +18,7 @@ public class OAuth2SignupReqDto {
     public User toEntity(BCryptPasswordEncoder bCryptPasswordEncoder) {
         return User.builder()
                 .username(username)
+                .name(name)
                 .password(bCryptPasswordEncoder.encode(password))
                 .email(email)
                 .build();
