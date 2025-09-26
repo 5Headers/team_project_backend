@@ -32,6 +32,12 @@ public class SecurityConfig {
 
                 // 요청 권한 규칙
                 .authorizeHttpRequests(auth -> auth
+
+                        // ✅ maps API 추가 허용
+                        .requestMatchers("/auth/**","/oauth2/**", "/chat/**", "/estimate/**", "/account/**", "/api/maps/**").permitAll()
+                        // 나머지는 JWT 인증 필요
+                        .anyRequest().authenticated()
+
                         .requestMatchers(
                                 "/auth/**",          // 회원가입/로그인
                                 "/oauth2/**",        // OAuth2 로그인
@@ -46,6 +52,7 @@ public class SecurityConfig {
                 .oauth2Login(oauth -> oauth
                         .defaultSuccessUrl("http://localhost:5173") // ⚡ 로그인 성공 후 리다이렉트
                         .failureUrl("/login?error=true")           // ⚡ 실패 시
+
                 )
 
                 // JWT 필터 추가
