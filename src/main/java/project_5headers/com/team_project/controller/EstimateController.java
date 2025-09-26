@@ -5,8 +5,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import project_5headers.com.team_project.entity.Estimate;
-import project_5headers.com.team_project.service.EstimateService;
 import project_5headers.com.team_project.security.model.PrincipalUser;
+import project_5headers.com.team_project.service.EstimateService;
+import project_5headers.com.team_project.service.ChatService;
+import project_5headers.com.team_project.dto.ApiRespDto;
+import project_5headers.com.team_project.dto.GptEstimateRequest;
 
 @RestController
 @RequestMapping("/estimate")
@@ -15,8 +18,13 @@ public class EstimateController {
     @Autowired
     private EstimateService estimateService;
 
+    @Autowired
+    private ChatService chatService;
+
+    // ------------------ CRUD ------------------
     @PostMapping("/add")
-    public ResponseEntity<?> addEstimate(@RequestBody Estimate estimate, PrincipalUser principalUser) {
+    public ResponseEntity<?> addEstimate(@RequestBody Estimate estimate,
+                                         @AuthenticationPrincipal PrincipalUser principalUser) {
         return ResponseEntity.ok(estimateService.addEstimate(estimate, principalUser));
     }
 
@@ -26,7 +34,8 @@ public class EstimateController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<?> getEstimatesByUser(@PathVariable Integer userId, PrincipalUser principalUser) {
+    public ResponseEntity<?> getEstimatesByUser(@PathVariable Integer userId,
+                                                @AuthenticationPrincipal PrincipalUser principalUser) {
         return ResponseEntity.ok(estimateService.getEstimatesByUserId(userId, principalUser));
     }
 
@@ -36,20 +45,27 @@ public class EstimateController {
     }
 
     @PostMapping("/update")
-    public ResponseEntity<?> updateEstimate(@RequestBody Estimate estimate, PrincipalUser principalUser) {
+    public ResponseEntity<?> updateEstimate(@RequestBody Estimate estimate,
+                                            @AuthenticationPrincipal PrincipalUser principalUser) {
         return ResponseEntity.ok(estimateService.updateEstimate(estimate, principalUser));
     }
 
     @PostMapping("/remove/{estimateId}")
-    public ResponseEntity<?> removeEstimate(@PathVariable Integer estimateId, PrincipalUser principalUser) {
+    public ResponseEntity<?> removeEstimate(@PathVariable Integer estimateId,
+                                            @AuthenticationPrincipal PrincipalUser principalUser) {
         return ResponseEntity.ok(estimateService.removeEstimateById(estimateId, principalUser));
     }
 
-    @PostMapping("/save-gpt")
-    public ResponseEntity<?> saveGpt(@RequestBody Estimate estimate,
-                                     @AuthenticationPrincipal PrincipalUser principalUser) {
-        estimate.setUserId(principalUser.getUserId());
-        return ResponseEntity.ok(estimateService.addEstimate(estimate, principalUser));
+    // ------------------ GPT 견적 ------------------
+    @PostMapping("/gpt")
+    public ResponseEntity<?> getEstimateFromGpt(@RequestBody GptEstimateRequest request,
+                                                @AuthenticationPrincipal PrincipalUser principalUser) {
+        String result = chatService.askGPTAndSave(
+                principalUser.getUserId(),
+                request.getTitle(),
+                request.getPurpose(),
+                request.getCost()
+        );
+        return ResponseEntity.ok(new ApiRespDto<>("success", "견적 생성 완료", result));
     }
-
 }

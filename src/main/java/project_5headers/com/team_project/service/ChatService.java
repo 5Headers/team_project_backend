@@ -4,11 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 import project_5headers.com.team_project.entity.Estimate;
 import project_5headers.com.team_project.entity.EstimatePart;
 import project_5headers.com.team_project.repository.EstimateRepository;
 import project_5headers.com.team_project.repository.EstimatePartRepository;
+import project_5headers.com.team_project.dto.ApiRespDto;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -39,9 +39,9 @@ public class ChatService {
         try {
             // ===== 1. GPT 프롬프트 =====
             String prompt = String.format(
-                    "사용자가 %s 용도로 %d원 예산의 PC를 원합니다. "
-                            + "게임용 PC 추천 견적을 제공하고, 반드시 '총 가격은 ~원입니다' 형식으로 명시해주세요. "
-                            + "그리고 부품 리스트는 '**카테고리**: 제품명 - 가격원 ([링크](https://...))' 형식으로 작성해주세요.",
+                    "사용자가 %s 용도로 %d원 예산의 PC를 원합니다. " +
+                            "PC 추천 견적을 제공하고, 반드시 '총 가격은 ~원입니다' 형식으로 명시해주세요. " +
+                            "그리고 부품 리스트는 '**카테고리**: 제품명 - 가격원' 형식으로 작성해주세요.",
                     purpose, cost
             );
 
@@ -54,16 +54,15 @@ public class ChatService {
             );
 
             // ===== 2. GPT 호출 =====
-            Mono<Map> response = webClient.post()
+            Map res = webClient.post()
                     .uri("/chat/completions")
                     .header("Authorization", "Bearer " + apiKey)
                     .bodyValue(requestBody)
                     .retrieve()
-                    .bodyToMono(Map.class);
+                    .bodyToMono(Map.class)
+                    .block();
 
-            Map res = response.block();
             String gptContent = "GPT 응답이 없습니다.";
-
             if (res != null && res.containsKey("choices")) {
                 List choices = (List) res.get("choices");
                 if (!choices.isEmpty()) {
@@ -74,12 +73,12 @@ public class ChatService {
             }
 
             // ===== 3. 총 가격 파싱 =====
-            int totalPrice = cost; // 기본값
+            int totalPrice = cost;
             if (gptContent != null && !gptContent.isEmpty()) {
-                Pattern pattern = Pattern.compile("총\\s*가격.*?([0-9,]+)\\s*원");
-                Matcher matcher = pattern.matcher(gptContent);
-                if (matcher.find()) {
-                    String numStr = matcher.group(1).replaceAll(",", "");
+                Pattern totalPattern = Pattern.compile("총\\s*가격.*?([0-9,]+)\\s*원");
+                Matcher totalMatcher = totalPattern.matcher(gptContent);
+                if (totalMatcher.find()) {
+                    String numStr = totalMatcher.group(1).replaceAll(",", "");
                     totalPrice = Integer.parseInt(numStr);
                 }
             }
@@ -97,24 +96,31 @@ public class ChatService {
                     .build();
 
             estimateRepository.addEstimate(estimate);
-            Integer estimateId = estimate.getEstimateId(); // ✅ PK 자동 세팅 (useGeneratedKeys 필요)
+            Integer estimateId = estimate.getEstimateId();
 
-            // ===== 5. 부품 리스트 파싱 =====
-            // 예시: **CPU**: AMD Ryzen 7 5800X3D - 600,000원 ([링크](https://example.com))
-            // ===== 5. 부품 리스트 파싱 =====
+            // ===== 5. 부품 리스트 파싱 & 네이버 링크 치환 =====
             Pattern partPattern = Pattern.compile(
-                    "\\*\\*(.*?)\\*\\*: (.*?) - ([0-9,]+)원"
+                    "\\*\\*(.*?)\\*\\*: (.*?) - ([0-9,만]+)원"
             );
             Matcher matcher = partPattern.matcher(gptContent);
+
+            StringBuffer finalContentBuffer = new StringBuffer();
 
             while (matcher.find()) {
                 String category = matcher.group(1).trim();
                 String name = matcher.group(2).trim();
-                int price = Integer.parseInt(matcher.group(3).replaceAll(",", ""));
 
-                // ✅ 네이버 링크 검색
+                // 가격 문자열 정리
+                String priceStr = matcher.group(3).replaceAll(",", "");
+                if (priceStr.contains("만")) {
+                    priceStr = priceStr.replace("만", "0000");
+                }
+                int price = Integer.parseInt(priceStr);
+
+                // ✅ 네이버 쇼핑 링크 검색
                 String link = naverShoppingService.searchFirstProductLink(name);
 
+                // DB 저장
                 EstimatePart part = EstimatePart.builder()
                         .estimateId(estimateId)
                         .category(category)
@@ -124,12 +130,18 @@ public class ChatService {
                         .storeType("ONLINE")
                         .createdAt(LocalDateTime.now())
                         .build();
-
                 estimatePartRepository.addEstimatePart(part);
+
+                // GPT 응답 문자열도 네이버 링크로 교체
+                String replacement = String.format("**%s**: %s - %,d원 ([링크](%s))",
+                        category, name, price, link);
+                matcher.appendReplacement(finalContentBuffer, Matcher.quoteReplacement(replacement));
             }
+            matcher.appendTail(finalContentBuffer);
 
+            String finalContent = finalContentBuffer.toString();
 
-            return gptContent;
+            return finalContent;
 
         } catch (Exception e) {
             e.printStackTrace();
