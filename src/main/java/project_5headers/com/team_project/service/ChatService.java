@@ -8,7 +8,6 @@ import project_5headers.com.team_project.entity.Estimate;
 import project_5headers.com.team_project.entity.EstimatePart;
 import project_5headers.com.team_project.repository.EstimateRepository;
 import project_5headers.com.team_project.repository.EstimatePartRepository;
-import project_5headers.com.team_project.dto.ApiRespDto;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -87,13 +86,14 @@ public class ChatService {
             Estimate estimate = Estimate.builder()
                     .userId(userId)
                     .title(title)
-                    .purpose(purpose)
-                    .budget(cost)
+                    .purpose(purpose) // ⚡ 여기에는 "게임용" / "사무용" 같은 용도만 그대로 저장
+                    .budget(cost)    // 예산은 budget 컬럼에 따로 저장
                     .totalPrice(totalPrice)
                     .bookmarkCount(0)
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
                     .build();
+
 
             estimateRepository.addEstimate(estimate);
             Integer estimateId = estimate.getEstimateId();
