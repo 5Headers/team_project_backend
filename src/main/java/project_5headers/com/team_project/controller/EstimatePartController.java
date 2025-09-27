@@ -52,4 +52,8 @@ public class EstimatePartController {
             return ResponseEntity.badRequest().body("삭제 실패");
         }
     }
+    @GetMapping("/list")
+    public ResponseEntity<List<EstimatePart>> getAllParts() {
+        return ResponseEntity.ok(estimatePartService.getAllParts());
+    }
 }
