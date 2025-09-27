@@ -44,8 +44,11 @@ public class ChatGPTService {
                 Map choice = (Map) choices[0];
                 Map messageMap = (Map) choice.get("message");
                 return (String) messageMap.get("content");
+
             }
         }
         return "응답이 없습니다.";
+
     }
+
 }
