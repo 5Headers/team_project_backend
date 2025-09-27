@@ -37,10 +37,16 @@ public class JwtAuthenticationFilter implements Filter {
         // 회원가입/로그인/지도 API/OPTIONS 요청은 인증 제외
         if (path.startsWith("/auth/signup") ||
                 path.startsWith("/auth/signin") ||
+
+                path.startsWith("/api/maps") ||   // ✅ 지도 API는 토큰 검사 제외
+                path.startsWith("/oauth2/") ||    // ✅ OAuth2 로그인도 토큰 검사 제외
+                path.startsWith("/error") ||
+
                 path.startsWith("/oauth2/") ||          // ✅ OAuth2 로그인 경로 제외
                 path.startsWith("/login") ||            // ✅ Spring Security 기본 로그인 경로 제외
                 path.startsWith("/error") ||            // ✅ 에러 페이지 제외
                 path.startsWith("/api/maps") ||         // ✅ 지도 API 제외
+
                 "OPTIONS".equalsIgnoreCase(req.getMethod())) {
 
             System.out.println("✅ JwtAuthenticationFilter: 인증 제외 처리됨 → " + path);
