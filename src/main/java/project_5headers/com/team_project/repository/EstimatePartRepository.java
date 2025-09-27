@@ -35,5 +35,7 @@ public class EstimatePartRepository {
     public int removeEstimatePartById(Integer estimateId){
         return estimatePartMapper.removeEstimatePartById(estimateId);
     }
-
+    public List<EstimatePart> getAllParts() {
+        return estimatePartMapper.getAllParts();
+    }
 }

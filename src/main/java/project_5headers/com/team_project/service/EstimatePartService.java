@@ -40,4 +40,7 @@ public class EstimatePartService {
     public boolean removeEstimatePartById(Integer estimatePartId) {
         return estimatePartRepository.removeEstimatePartById(estimatePartId) > 0;
     }
+    public List<EstimatePart> getAllParts() {
+        return estimatePartRepository.getAllParts();
+    }
 }

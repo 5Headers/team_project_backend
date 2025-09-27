@@ -8,13 +8,24 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import project_5headers.com.team_project.security.filter.JwtAuthenticationFilter;
+import project_5headers.com.team_project.security.handler.OAuth2SuccessHandler;
+import project_5headers.com.team_project.service.OAuth2PrincipalUserService;
+
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final OAuth2PrincipalUserService oAuth2PrincipalUserService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -22,41 +33,40 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                // CSRF 비활성화 (JWT 방식에서는 필요 없음)
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowedOrigins(Arrays.asList(
+                "http://localhost:3000",
+                "http://localhost:5173"
+        ));
+        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        corsConfiguration.setAllowedHeaders(List.of("*"));
+        corsConfiguration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+        return source;
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
+                .formLogin(formLogin -> formLogin.disable())
+                .httpBasic(httpBasic -> httpBasic.disable())
+                .logout(logout -> logout.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-                // 세션 사용 안 함 (JWT stateless)
-                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        http.authorizeHttpRequests(auth -> auth
+                .requestMatchers("/auth/**", "/chat/**", "/estimate/**", "/account/**", "/oauth2/**").permitAll()
+                .anyRequest().authenticated()
+        );
 
-                // 요청 권한 규칙
-                .authorizeHttpRequests(auth -> auth
-
-                        // ✅ maps API 추가 허용
-                        .requestMatchers("/auth/**","/oauth2/**", "/chat/**", "/estimate/**", "/account/**", "/api/maps/**").permitAll()
-                        // 나머지는 JWT 인증 필요
-                        .anyRequest().authenticated()
-
-                        .requestMatchers(
-                                "/auth/**",          // 회원가입/로그인
-                                "/oauth2/**",        // OAuth2 로그인
-                                "/login/**",         // Spring Security 로그인 기본 경로
-                                "/error",            // 에러
-                                "/api/maps/**"       // 지도 API
-                        ).permitAll()
-                        .anyRequest().authenticated() // 나머지는 인증 필요
-                )
-
-                // OAuth2 로그인 기본 설정 (구글/카카오 등)
-                .oauth2Login(oauth -> oauth
-                        .defaultSuccessUrl("http://localhost:5173") // ⚡ 로그인 성공 후 리다이렉트
-                        .failureUrl("/login?error=true")           // ⚡ 실패 시
-
-                )
-
-                // JWT 필터 추가
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2PrincipalUserService))
+                        .successHandler(oAuth2SuccessHandler)
+                );
 
         return http.build();
     }
