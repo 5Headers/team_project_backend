@@ -37,7 +37,8 @@ public class SecurityConfig {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:3000",
-                "http://localhost:5173"
+                "http://localhost:5173",
+                "http://localhost:5174"
         ));
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(List.of("*"));
@@ -58,6 +59,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.authorizeHttpRequests(auth -> auth
+                // 회원탈퇴는 로그인 필요
+                .requestMatchers("/auth/withdraw").authenticated()
+                // 나머지 auth/**는 모두 허용
                 .requestMatchers("/auth/**", "/chat/**", "/estimate/**", "/account/**", "/oauth2/**").permitAll()
                 .anyRequest().authenticated()
         );

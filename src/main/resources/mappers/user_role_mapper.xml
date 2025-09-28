@@ -50,4 +50,10 @@
         WHERE user_role_id = #{userRoleId} AND user_id = #{userId}
     </update>
 
+    <!-- UserRole 삭제 (회원탈퇴 시 사용) -->
+    <delete id="removeRolesByUserId">
+        DELETE FROM user_role_tb
+        WHERE user_id = #{userId}
+    </delete>
+
 </mapper>

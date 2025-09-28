@@ -10,4 +10,6 @@ public interface UserRoleMapper {
     int addUserRole(UserRole userRole);
     Optional<UserRole> getUserRoleByUserIdAndRoleId(Integer userId, Integer roleId);
     int updateRoleId(Integer userRoleId, Integer userId);
+    int removeRolesByUserId(Integer userId);
+
 }

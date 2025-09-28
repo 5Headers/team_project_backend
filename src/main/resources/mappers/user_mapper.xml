@@ -25,7 +25,7 @@
     <resultMap id="UserResultMap" type="project_5headers.com.team_project.entity.User">
         <id property="userId" column="user_id"/>
         <result property="username" column="username"/>
-        <result property="name" column="name"/>
+<!--        <result property="name" column="name"/>-->
         <result property="email" column="email"/>
         <result property="password" column="password"/>
         <result property="createDt" column="create_dt"/>
@@ -35,8 +35,10 @@
 
     <!-- User 추가 -->
     <insert id="addUser" useGeneratedKeys="true" keyProperty="userId">
-        INSERT INTO user_tb (username, name, email, password, create_dt)
-        VALUES (#{username}, #{name}, #{email}, #{password}, NOW())
+<!--        INSERT INTO user_tb (username, name, email, password, create_dt)-->
+        INSERT INTO user_tb (username, email, password, create_dt)
+<!--        VALUES (#{username}, #{name}, #{email}, #{password}, NOW())-->
+        VALUES (#{username}, #{email}, #{password}, NOW())
     </insert>
 
     <!-- User 조회 by username -->
