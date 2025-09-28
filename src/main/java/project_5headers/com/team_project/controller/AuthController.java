@@ -54,4 +54,14 @@ public class AuthController {
     public ResponseEntity<?> checkEmail(@RequestParam String email) {
         return ResponseEntity.ok(authService.checkEmail(email));
     }
+
+    //회원탈퇴
+    @DeleteMapping("/withdraw")
+    public ResponseEntity<?> withdrawUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        PrincipalUser principalUser = (PrincipalUser) authentication.getPrincipal();
+        ApiRespDto<?> response = authService.withdrawUser(principalUser.getUserId());
+        return ResponseEntity.ok(response);
+    }
+
 }

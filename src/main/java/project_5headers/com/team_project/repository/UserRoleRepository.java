@@ -12,6 +12,7 @@ import java.util.Optional;
 @Mapper
 public class UserRoleRepository {
 
+
     @Autowired
     private UserRoleMapper userRoleMapper;
 
@@ -26,5 +27,10 @@ public class UserRoleRepository {
     public int updateRoleId(Integer userRoleId, Integer userId){
         return userRoleMapper.updateRoleId(userRoleId, userId);
     }
+
+    public int removeRolesByUserId(Integer userId){
+        return userRoleMapper.removeRolesByUserId(userId);
+    }
+
 }
 //test
