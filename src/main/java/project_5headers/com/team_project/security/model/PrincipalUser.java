@@ -24,6 +24,7 @@ public class PrincipalUser implements UserDetails {
 
     private Integer userId;
     private String username;
+    private String name;
 
     @JsonIgnore
     private String password;
@@ -38,11 +39,13 @@ public class PrincipalUser implements UserDetails {
     public static PrincipalUser fromEntity(User user) {
         return PrincipalUser.builder()
                 .userId(user.getUserId())
+                .name(user.getName())
                 .username(user.getUsername())
                 .password(user.getPassword())
                 .email(user.getEmail())
                 .userRoles(user.getUserRoles()) // User 엔티티에 있는 userRoles 사용
                 .build();
+
     }
 
     @Override
