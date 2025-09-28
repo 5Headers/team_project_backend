@@ -1,6 +1,7 @@
 package project_5headers.com.team_project.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,7 @@ import project_5headers.com.team_project.entity.UserRole;
 import project_5headers.com.team_project.repository.UserRepository;
 import project_5headers.com.team_project.repository.UserRoleRepository;
 import project_5headers.com.team_project.security.jwt.JwtUtils;
+import project_5headers.com.team_project.security.model.PrincipalUser;
 
 import java.util.Optional;
 

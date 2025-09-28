@@ -41,8 +41,6 @@ public class JwtAuthenticationFilter implements Filter {
                 path.startsWith("/api/maps") ||   // ✅ 지도 API는 토큰 검사 제외
                 path.startsWith("/oauth2/") ||    // ✅ OAuth2 로그인도 토큰 검사 제외
                 path.startsWith("/error") ||
-
-                path.startsWith("/oauth2/") ||          // ✅ OAuth2 로그인 경로 제외
                 path.startsWith("/login") ||            // ✅ Spring Security 기본 로그인 경로 제외
                 path.startsWith("/error") ||            // ✅ 에러 페이지 제외
                 path.startsWith("/api/maps") ||         // ✅ 지도 API 제외
@@ -71,6 +69,7 @@ public class JwtAuthenticationFilter implements Filter {
                         PrincipalUser principal = PrincipalUser.builder()
                                 .userId(user.getUserId())
                                 .username(user.getUsername())
+                                .name(user.getName())
                                 .password(user.getPassword())
                                 .email(user.getEmail())
                                 .userRoles(user.getUserRoles() != null ? user.getUserRoles() : List.of())
