@@ -56,4 +56,24 @@ public class BookmarkService {
                 ? new ApiRespDto<>("success", "북마크가 삭제되었습니다.", null)
                 : new ApiRespDto<>("failed", "북마크 삭제 실패", null);
     }
+
+    @Transactional(rollbackFor = Exception.class)
+    public ApiRespDto<?> toggleBookmark(Integer estimateId, PrincipalUser principalUser) {
+        Integer userId = principalUser.getUserId();
+
+        Optional<Bookmark> existing = bookmarkRepository.findByUserAndEstimate(userId, estimateId);
+        if (existing.isPresent()) {
+            // 이미 북마크가 있으면 삭제
+            bookmarkRepository.removeByUserAndEstimate(userId, estimateId);
+            return new ApiRespDto<>("removed", "북마크가 해제되었습니다.", null);
+        } else {
+            // 없으면 추가
+            Bookmark bookmark = Bookmark.builder()
+                    .estimateId(estimateId)
+                    .userId(userId)
+                    .build();
+            bookmarkRepository.addBookmark(bookmark);
+            return new ApiRespDto<>("added", "북마크가 추가되었습니다.", bookmark);
+        }
+    }
 }

@@ -13,4 +13,7 @@ public interface BookmarkMapper {
     Optional<Bookmark> getBookmarkById(Integer bookmarkId);
     List<Bookmark> getBookmarksByUserId(Integer userId);
     int removeBookmarkById(Integer bookmarkId);
+    Optional<Bookmark> findByUserAndEstimate(Integer userId, Integer estimateId);
+    int removeByUserAndEstimate(Integer userId, Integer estimateId);
+
 }

@@ -29,4 +29,12 @@ public class BookmarkRepository {
     public int removeBookmarkById(Integer bookmarkId){
         return bookmarkMapper.removeBookmarkById(bookmarkId);
     }
+
+    public Optional<Bookmark> findByUserAndEstimate(Integer userId, Integer estimateId) {
+        return bookmarkMapper.findByUserAndEstimate(userId, estimateId);
+    }
+
+    public int removeByUserAndEstimate(Integer userId, Integer estimateId) {
+        return bookmarkMapper.removeByUserAndEstimate(userId, estimateId);
+    }
 }
