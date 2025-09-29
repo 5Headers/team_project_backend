@@ -23,6 +23,16 @@
         SELECT * FROM bookmark_tb WHERE user_id = #{userId} ORDER BY create_dt DESC
     </select>
 
+    <select id="findByUserAndEstimate" resultMap="BookmarkResultMap">
+        SELECT * FROM bookmark_tb
+        WHERE user_id = #{userId} AND estimate_id = #{estimateId}
+    </select>
+
+    <delete id="removeByUserAndEstimate">
+        DELETE FROM bookmark_tb
+        WHERE user_id = #{userId} AND estimate_id = #{estimateId}
+    </delete>
+
     <delete id="removeBookmarkById">
         DELETE FROM bookmark_tb WHERE bookmark_id = #{bookmarkId}
     </delete>
