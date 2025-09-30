@@ -4,12 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import project_5headers.com.team_project.dto.ApiRespDto;
+import project_5headers.com.team_project.dto.EstimateRespDto;
+import project_5headers.com.team_project.dto.GptEstimateRequest;
 import project_5headers.com.team_project.entity.Estimate;
 import project_5headers.com.team_project.security.model.PrincipalUser;
-import project_5headers.com.team_project.service.EstimateService;
 import project_5headers.com.team_project.service.ChatService;
-import project_5headers.com.team_project.dto.ApiRespDto;
-import project_5headers.com.team_project.dto.GptEstimateRequest;
+import project_5headers.com.team_project.service.EstimateService;
 
 @RestController
 @RequestMapping("/estimate")
@@ -60,7 +61,7 @@ public class EstimateController {
     @PostMapping("/gpt")
     public ResponseEntity<?> getEstimateFromGpt(@RequestBody GptEstimateRequest request,
                                                 @AuthenticationPrincipal PrincipalUser principalUser) {
-        String result = chatService.askGPTAndSave(
+        EstimateRespDto result = chatService.askGPTAndSave(   // ✅ 타입 변경
                 principalUser.getUserId(),
                 request.getTitle(),
                 request.getPurpose(),

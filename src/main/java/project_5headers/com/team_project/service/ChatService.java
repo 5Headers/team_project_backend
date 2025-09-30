@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import project_5headers.com.team_project.dto.EstimateRespDto;
 import project_5headers.com.team_project.entity.Estimate;
 import project_5headers.com.team_project.entity.EstimatePart;
 import project_5headers.com.team_project.repository.EstimateRepository;
@@ -34,7 +35,7 @@ public class ChatService {
         this.estimatePartRepository = estimatePartRepository;
     }
 
-    public String askGPTAndSave(Integer userId, String title, String purpose, int cost) {
+    public EstimateRespDto askGPTAndSave(Integer userId, String title, String purpose, int cost) {
         try {
             // ===== 1. GPT 프롬프트 =====
             String prompt = String.format(
@@ -86,25 +87,23 @@ public class ChatService {
             Estimate estimate = Estimate.builder()
                     .userId(userId)
                     .title(title)
-                    .purpose(purpose) // ⚡ 여기에는 "게임용" / "사무용" 같은 용도만 그대로 저장
-                    .budget(cost)    // 예산은 budget 컬럼에 따로 저장
+                    .purpose(purpose)
+                    .budget(cost)
                     .totalPrice(totalPrice)
                     .bookmarkCount(0)
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
                     .build();
 
-
             estimateRepository.addEstimate(estimate);
             Integer estimateId = estimate.getEstimateId();
 
-            // ===== 5. 부품 리스트 파싱 & 네이버 링크 치환 =====
-            Pattern partPattern = Pattern.compile(
-                    "\\*\\*(.*?)\\*\\*: (.*?) - ([0-9,만]+)원"
-            );
+            // ===== 5. 부품 리스트 파싱 =====
+            Pattern partPattern = Pattern.compile("\\*\\*(.*?)\\*\\*: (.*?) - ([0-9,만]+)원");
             Matcher matcher = partPattern.matcher(gptContent);
 
             StringBuffer finalContentBuffer = new StringBuffer();
+            List<EstimatePart> partList = new ArrayList<>();
 
             while (matcher.find()) {
                 String category = matcher.group(1).trim();
@@ -117,7 +116,7 @@ public class ChatService {
                 }
                 int price = Integer.parseInt(priceStr);
 
-                // ✅ 네이버 쇼핑 링크 검색
+                // 네이버 쇼핑 링크 검색
                 String link = naverShoppingService.searchFirstProductLink(name);
 
                 // DB 저장
@@ -131,6 +130,7 @@ public class ChatService {
                         .createdAt(LocalDateTime.now())
                         .build();
                 estimatePartRepository.addEstimatePart(part);
+                partList.add(part);
 
                 // GPT 응답 문자열도 네이버 링크로 교체
                 String replacement = String.format("**%s**: %s - %,d원 ([링크](%s))",
@@ -141,11 +141,12 @@ public class ChatService {
 
             String finalContent = finalContentBuffer.toString();
 
-            return finalContent;
+            // ===== 6. DTO 반환 =====
+            return new EstimateRespDto(estimateId, finalContent, partList);
 
         } catch (Exception e) {
             e.printStackTrace();
-            return "서버 오류: " + e.getMessage();
+            return new EstimateRespDto(null, "서버 오류: " + e.getMessage(), List.of());
         }
     }
 }
