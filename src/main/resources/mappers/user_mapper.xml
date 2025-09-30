@@ -27,6 +27,7 @@
         <result property="username" column="username"/>
         <result property="name" column="name"/>
         <result property="email" column="email"/>
+        <result property="profileImg" column="profile_img"/>
         <result property="password" column="password"/>
         <result property="createDt" column="create_dt"/>
         <result property="updateDt" column="update_dt"/>
@@ -36,7 +37,7 @@
     <!-- User 추가 -->
     <insert id="addUser" useGeneratedKeys="true" keyProperty="userId">
         INSERT INTO user_tb (username, name, email, password, create_dt)
-        VALUES (#{username}, #{name}, #{email}, #{password}, NOW())
+        VALUES (#{username}, #{name}, #{email}, #{password}, "https://firebasestorage.googleapis.com/v0/b/headers-b2f66.firebasestorage.app/o/IT%EB%B6%80%EC%82%B0%20%EB%B0%B0%EA%B2%BD%ED%99%94%EB%A9%B4_0618.jpg?alt=media&amp;token=290f5c9e-821b-46ff-ab7c-d5f4be6a0f69" NOW())
 
     </insert>
 
@@ -72,6 +73,7 @@
         u.name,
         u.email,
         u.password,
+        u.profile_img,
         u.create_dt,
         u.update_dt,
         urt.user_role_id,
@@ -96,6 +98,7 @@
         u.name,
         u.email,
         u.password,
+        u.profile_img,
         u.create_dt,
         u.update_dt,
         urt.user_role_id,
@@ -120,6 +123,7 @@
         u.name,
         u.email,
         u.password,
+        ut.profile_img,
         u.create_dt,
         u.update_dt,
         urt.user_role_id,

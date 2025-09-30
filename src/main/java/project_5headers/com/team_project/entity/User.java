@@ -14,6 +14,7 @@ public class User {
     private String username;
     private String name;
     private String email;
+    private String profileImg;
     private String password;
     private LocalDateTime createDt;
     private LocalDateTime updateDt;

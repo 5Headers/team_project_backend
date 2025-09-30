@@ -64,5 +64,10 @@ public class UserRepository {
         return userMapper.getUserByNameAndEmail(name, email);
     }
 
+    // 프로필 이미지 변경
+    public int changeProfileImg(User user) {
+
+        return userMapper.updateProfileImg(user);
+    }
 
 }
