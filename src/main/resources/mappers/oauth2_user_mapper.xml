@@ -4,22 +4,25 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="project_5headers.com.team_project.mapper.OAuth2UserMapper">
 
-    <select id="getOAuth2UserByProviderAndProviderUserId">
-        select
-        *
-        from
-        oauth2_user_tb
-        where
-        provider = #{provider}and
-        provider_user_id = #{providerUserId}
+    <!-- userId로 OAuth2 계정 조회 -->
+    <select id="getByUserId" resultType="project_5headers.com.team_project.entity.OAuth2User">
+        SELECT * FROM oauth2_user_tb WHERE user_id = #{userId}
+    </select>
 
+    <!-- OAuth2 계정 삭제 -->
+    <delete id="deleteByUserId" parameterType="int">
+        DELETE FROM oauth2_user_tb WHERE user_id = #{userId};
+    </delete>
+
+    <!-- 기존 조회/추가 메서드 -->
+    <select id="getOAuth2UserByProviderAndProviderUserId">
+        SELECT * FROM oauth2_user_tb
+        WHERE provider = #{provider} AND provider_user_id = #{providerUserId}
     </select>
 
     <insert id="addOAuth2User">
-        insert into
-        oauth2_user_tb
-        values
-        (0,#{userId},#{provider},#{providerUserId},now(),null)
+        INSERT INTO oauth2_user_tb VALUES
+        (0, #{userId}, #{provider}, #{providerUserId}, NOW(), NULL)
     </insert>
 
 </mapper>
