@@ -3,6 +3,7 @@ package project_5headers.com.team_project.security.filter;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,22 +30,18 @@ public class JwtAuthenticationFilter implements Filter {
             throws IOException, ServletException {
 
         HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse res = (HttpServletResponse) response;
         String path = req.getRequestURI();
 
-        // ===== 디버깅 로그 =====
         System.out.println("🔎 JwtAuthenticationFilter: 요청 path = " + path);
 
         // 회원가입/로그인/지도 API/OPTIONS 요청은 인증 제외
         if (path.startsWith("/auth/signup") ||
                 path.startsWith("/auth/signin") ||
-
-                path.startsWith("/api/maps") ||   // ✅ 지도 API는 토큰 검사 제외
-                path.startsWith("/oauth2/") ||    // ✅ OAuth2 로그인도 토큰 검사 제외
+                path.startsWith("/api/maps") ||
+                path.startsWith("/oauth2/") ||
                 path.startsWith("/error") ||
-                path.startsWith("/login") ||            // ✅ Spring Security 기본 로그인 경로 제외
-                path.startsWith("/error") ||            // ✅ 에러 페이지 제외
-                path.startsWith("/api/maps") ||         // ✅ 지도 API 제외
-
+                path.startsWith("/login") ||
                 "OPTIONS".equalsIgnoreCase(req.getMethod())) {
 
             System.out.println("✅ JwtAuthenticationFilter: 인증 제외 처리됨 → " + path);
@@ -52,44 +49,52 @@ public class JwtAuthenticationFilter implements Filter {
             return;
         }
 
-
         // ===== Authorization 헤더 검사 =====
         String authHeader = req.getHeader("Authorization");
-        if (jwtUtils.isBearer(authHeader)) {
-            String token = jwtUtils.removeBearer(authHeader);
-            try {
-                if (jwtUtils.validateToken(token)) {
-                    Claims claims = jwtUtils.getClaims(token);
 
-                    // 토큰에서 ID 가져오기
-                    String userIdStr = claims.getId();
-                    Integer userId = Integer.valueOf(userIdStr);
+        if (!jwtUtils.isBearer(authHeader)) {
+            // 헤더가 없거나 형식 오류 → 401 반환
+            res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authorization header missing or invalid");
+            return;
+        }
 
-                    userRepository.getUserByUserId(userId).ifPresentOrElse(user -> {
-                        PrincipalUser principal = PrincipalUser.builder()
-                                .userId(user.getUserId())
-                                .username(user.getUsername())
-                                .name(user.getName())
-                                .password(user.getPassword())
-                                .email(user.getEmail())
-                                .userRoles(user.getUserRoles() != null ? user.getUserRoles() : List.of())
-                                .build();
+        String token = jwtUtils.removeBearer(authHeader);
 
-                        UsernamePasswordAuthenticationToken authentication =
-                                new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-                        System.out.println("✅ JwtAuthenticationFilter: 인증 성공 userId=" + userId);
-
-                    }, () -> {
-                        throw new AuthenticationServiceException("사용자를 찾을 수 없습니다.");
-                    });
-                }
-            } catch (RuntimeException e) {
-                e.printStackTrace();
+        try {
+            if (!jwtUtils.validateToken(token)) {
+                // 토큰 유효하지 않음 → 401 반환
+                res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
+                return;
             }
-        } else {
-            System.out.println("⚠️ JwtAuthenticationFilter: Authorization 헤더 없음/형식 오류");
+
+            Claims claims = jwtUtils.getClaims(token);
+            String userIdStr = claims.getId();
+            Integer userId = Integer.valueOf(userIdStr);
+
+            userRepository.getUserByUserId(userId).ifPresentOrElse(user -> {
+                PrincipalUser principal = PrincipalUser.builder()
+                        .userId(user.getUserId())
+                        .username(user.getUsername())
+                        .name(user.getName())
+                        .password(user.getPassword())
+                        .email(user.getEmail())
+                        .userRoles(user.getUserRoles() != null ? user.getUserRoles() : List.of())
+                        .build();
+
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                System.out.println("✅ JwtAuthenticationFilter: 인증 성공 userId=" + userId);
+
+            }, () -> {
+                throw new AuthenticationServiceException("사용자를 찾을 수 없습니다.");
+            });
+
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token validation error");
+            return;
         }
 
         chain.doFilter(request, response);

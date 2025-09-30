@@ -29,7 +29,7 @@ public class BookmarkController {
         return ResponseEntity.ok(bookmarkService.getBookmarksByUserId(userId, principalUser));
     }
 
-    @PostMapping("/remove/{bookmarkId}")
+    @DeleteMapping("/remove/{bookmarkId}")
     public ResponseEntity<?> removeBookmark(
             @PathVariable Integer bookmarkId,
             @AuthenticationPrincipal PrincipalUser principalUser) {
