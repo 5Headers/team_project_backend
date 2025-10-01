@@ -12,6 +12,14 @@ public class OAuth2UserRepository {
     @Autowired
     private OAuth2UserMapper oAuth2UserMapper;
 
+    public Optional<OAuth2User> getByUserId(Integer userId) {
+        return Optional.ofNullable(oAuth2UserMapper.getByUserId(userId));
+    }
+
+    public int deleteByUserId(Integer userId) {
+        return oAuth2UserMapper.deleteByUserId(userId);
+    }
+
     public Optional<OAuth2User> getOAuth2UserByProviderAndProviderUserId(String provider, String providerUserId) {
         return oAuth2UserMapper.getOAuth2UserByProviderAndProviderUserId(provider, providerUserId);
     }

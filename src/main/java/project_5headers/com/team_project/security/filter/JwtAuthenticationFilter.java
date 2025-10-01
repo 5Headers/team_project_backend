@@ -38,6 +38,12 @@ public class JwtAuthenticationFilter implements Filter {
         // 회원가입/로그인/지도 API/OPTIONS 요청은 인증 제외
         if (path.startsWith("/auth/signup") ||
                 path.startsWith("/auth/signin") ||
+                path.startsWith("/auth/check-username") ||
+                path.startsWith("/auth/check-email") ||
+                path.startsWith("/auth/reset-password") ||
+                path.startsWith("/auth/find-id") ||
+                path.startsWith("/account/find-id") ||
+                path.startsWith("account/reset-password")||
                 path.startsWith("/api/maps") ||
                 path.startsWith("/oauth2/") ||
                 path.startsWith("/error") ||

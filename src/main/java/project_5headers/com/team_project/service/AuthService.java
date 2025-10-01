@@ -8,13 +8,15 @@ import org.springframework.transaction.annotation.Transactional;
 import project_5headers.com.team_project.dto.ApiRespDto;
 import project_5headers.com.team_project.dto.auth.SigninReqDto;
 import project_5headers.com.team_project.dto.auth.SignupReqDto;
+import project_5headers.com.team_project.entity.Estimate;
+import project_5headers.com.team_project.entity.OAuth2User;
 import project_5headers.com.team_project.entity.User;
 import project_5headers.com.team_project.entity.UserRole;
-import project_5headers.com.team_project.repository.UserRepository;
-import project_5headers.com.team_project.repository.UserRoleRepository;
+import project_5headers.com.team_project.repository.*;
 import project_5headers.com.team_project.security.jwt.JwtUtils;
 import project_5headers.com.team_project.security.model.PrincipalUser;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,13 +25,25 @@ import java.util.Optional;
 public class AuthService {
 
     @Autowired
+    private EstimatePartRepository estimatePartRepository;
+
+    @Autowired
+    private EstimateRepository estimateRepository;
+
+    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    private OAuth2UserRepository oauth2UserRepository;
+
+    @Autowired
+    private UserRoleRepository userRoleRepository;
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    private UserRoleRepository userRoleRepository;
+    private BookmarkRepository bookmarkRepository;
 
     @Autowired
     private JwtUtils jwtUtils;
@@ -116,32 +130,39 @@ public class AuthService {
         return new ApiRespDto<>("success", "로그인 성공", accessToken);
     }
 
-    // 회원탈퇴 (연관 데이터 포함 삭제)
+    // 회원탈퇴 (견적/부품 + 찜목록 + OAuth2 + 권한 + user_tb)
     @Transactional
     public ApiRespDto<?> withdrawUser(Integer userId) {
         try {
-            // 1. 사용자 권한 삭제
-            userRoleRepository.removeRolesByUserId(userId); // 🔹 추가: 권한 연관 삭제
+            // 1️⃣ 찜목록 삭제
+            bookmarkRepository.getBookmarksByUserId(userId)
+                    .forEach(bookmark -> bookmarkRepository.removeBookmarkById(bookmark.getBookmarkId()));
 
-            // 2. OAuth2 계정 연결 삭제 (있는 경우)
-            // oauth2Repository.removeByUserId(userId); // 🔹 추가: 소셜 계정 연결 삭제
-
-            // 3. 찜, 게시글, 댓글 등 연관 데이터 삭제 가능
-            // favoriteRepository.removeByUserId(userId); // 🔹 추가: 찜 데이터 삭제
-            // postRepository.removeByUserId(userId);     // 🔹 추가: 게시글 삭제
-            // commentRepository.removeByUserId(userId);  // 🔹 추가: 댓글 삭제
-
-            // 4. 사용자 본인 삭제
-            int deletedCount = userRepository.removeUserById(userId);
-            if (deletedCount != 1) {
-                return new ApiRespDto<>("failed", "회원 탈퇴 실패", null);
+            // 2️⃣ 견적 & 부품 삭제
+            List<Estimate> estimates = estimateRepository.getEstimatesByUserId(userId);
+            for (Estimate est : estimates) {
+                // 견적 부품 삭제
+                estimatePartRepository.getPartsByEstimateId(est.getEstimateId())
+                        .forEach(part -> estimatePartRepository.removeEstimatePartById(part.getEstimatePartId()));
+                // 견적 삭제
+                estimateRepository.removeEstimateById(est.getEstimateId());
             }
 
-            return new ApiRespDto<>("success", "회원 탈퇴 완료", null);
+            // 3️⃣ OAuth2 계정 삭제 (존재할 경우)
+            Optional<OAuth2User> oauthUser = oauth2UserRepository.getByUserId(userId);
+            oauthUser.ifPresent(u -> oauth2UserRepository.deleteByUserId(userId));
 
+            // 4️⃣ 사용자 권한 삭제
+            userRoleRepository.removeRolesByUserId(userId);
+
+            // 5️⃣ user_tb 삭제
+            userRepository.removeUserById(userId);
+
+            return new ApiRespDto<>("success", "회원 탈퇴 완료", null);
         } catch (Exception e) {
-            return new ApiRespDto<>("failed", "회원 탈퇴 중 오류 발생: " + e.getMessage(), null);
+            return new ApiRespDto<>("failed", "회원 탈퇴 실패: " + e.getMessage(), null);
         }
     }
+
 
 }
