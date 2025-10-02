@@ -27,17 +27,17 @@
         <result property="username" column="username"/>
         <result property="name" column="name"/>
         <result property="email" column="email"/>
+        <result property="profileImg" column="profile_img"/>
         <result property="password" column="password"/>
         <result property="createDt" column="create_dt"/>
         <result property="updateDt" column="update_dt"/>
         <collection property="userRoles" resultMap="UserRoleResultMap"/>
     </resultMap>
 
-    <!-- User 추가 -->
+    <!-- User 추가 (회원가입) -->
     <insert id="addUser" useGeneratedKeys="true" keyProperty="userId">
-        INSERT INTO user_tb (username, name, email, password, create_dt)
-        VALUES (#{username}, #{name}, #{email}, #{password}, NOW())
-
+        INSERT INTO user_tb (username, name, email, password, profile_img, create_dt)
+        VALUES (#{username}, #{name}, #{email}, #{password}, #{profileImg}, NOW())
     </insert>
 
     <!-- User 조회 by username -->
@@ -48,6 +48,7 @@
         u.name,
         u.email,
         u.password,
+        u.profile_img,
         u.create_dt,
         u.update_dt,
         urt.user_role_id,
@@ -72,6 +73,7 @@
         u.name,
         u.email,
         u.password,
+        u.profile_img,
         u.create_dt,
         u.update_dt,
         urt.user_role_id,
@@ -96,6 +98,7 @@
         u.name,
         u.email,
         u.password,
+        u.profile_img,
         u.create_dt,
         u.update_dt,
         urt.user_role_id,
@@ -120,6 +123,7 @@
         u.name,
         u.email,
         u.password,
+        u.profile_img,
         u.create_dt,
         u.update_dt,
         urt.user_role_id,
@@ -168,15 +172,14 @@
         u.name,
         u.email,
         u.password,
+        u.profile_img,
         u.create_dt,
         u.update_dt,
-
         urt.user_role_id,
         urt.user_id AS urt_user_id,
         urt.role_id AS urt_role_id,
         urt.create_dt AS urt_create_dt,
         urt.update_dt AS urt_update_dt,
-
         r.role_id,
         r.role_name,
         r.role_name_kor
@@ -186,5 +189,12 @@
         WHERE u.name = #{name} AND u.email = #{email}
     </select>
 
+    <!-- 프로필 이미지 변경 -->
+    <update id="updateProfileImg">
+        UPDATE user_tb
+        SET profile_img = #{profileImg},
+        update_dt = NOW()
+        WHERE user_id = #{userId}
+    </update>
 
 </mapper>

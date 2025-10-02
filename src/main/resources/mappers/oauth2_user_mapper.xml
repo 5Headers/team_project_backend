@@ -9,9 +9,12 @@
         SELECT * FROM oauth2_user_tb WHERE user_id = #{userId}
     </select>
 
+    <select id="getByUserIdList" resultType="project_5headers.com.team_project.entity.OAuth2User">
+        SELECT * FROM oauth2_user_tb WHERE user_id = #{userId}
+    </select>
     <!-- OAuth2 계정 삭제 -->
     <delete id="deleteByUserId" parameterType="int">
-        DELETE FROM oauth2_user_tb WHERE user_id = #{userId};
+            DELETE FROM oauth2_user_tb WHERE user_id = #{userId};
     </delete>
 
     <!-- 기존 조회/추가 메서드 -->

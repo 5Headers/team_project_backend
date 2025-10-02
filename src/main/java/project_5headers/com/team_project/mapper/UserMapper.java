@@ -37,5 +37,8 @@ public interface UserMapper {
     // 사용자 삭제
     int removeUserById(Integer userId);
 
+    // 이미지 업데이트하기
+    int updateProfileImg(User user);
+
 
 }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import project_5headers.com.team_project.entity.OAuth2User;
 import project_5headers.com.team_project.mapper.OAuth2UserMapper;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -27,4 +28,8 @@ public class OAuth2UserRepository {
     public int addOAuth2User(OAuth2User oAuth2User) {
         return oAuth2UserMapper.addOAuth2User(oAuth2User);
     }
+    public List<OAuth2User> getByUserIdList(Integer userId) {
+        return oAuth2UserMapper.getByUserIdList(userId);
+    }
+
 }

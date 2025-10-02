@@ -16,7 +16,6 @@ import project_5headers.com.team_project.security.filter.JwtAuthenticationFilter
 import project_5headers.com.team_project.security.handler.OAuth2SuccessHandler;
 import project_5headers.com.team_project.service.OAuth2PrincipalUserService;
 
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,7 +38,6 @@ public class SecurityConfig {
         corsConfiguration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:3000",
                 "http://localhost:5173"
-
         ));
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(List.of("*"));
@@ -60,10 +58,25 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.authorizeHttpRequests(auth -> auth
-                // 회원탈퇴는 로그인 필요
+                // ✅ 인증 필요한 요청
+                .requestMatchers("/account/profile").authenticated()
                 .requestMatchers("/auth/withdraw").authenticated()
-                // 나머지 auth/**는 모두 허용
-                .requestMatchers("/auth/**", "/chat/**", "/estimate/**", "/account/**", "/oauth2/**").permitAll()
+
+                // ✅ 누구나 접근 가능
+                .requestMatchers(
+                        "/auth/signup",
+                        "/auth/signin",
+                        "/auth/check-username",
+                        "/auth/check-email",
+                        "/account/reset-password",
+                        "/account/find-id",
+                        "/oauth2/**"
+                ).permitAll()
+
+                // ✅ 공개 API
+                .requestMatchers("/chat/**", "/estimate/**").permitAll()
+
+                // ✅ 나머지는 인증 필요
                 .anyRequest().authenticated()
         );
 
@@ -72,7 +85,6 @@ public class SecurityConfig {
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
                 })
         );
-
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .oauth2Login(oauth2 -> oauth2
