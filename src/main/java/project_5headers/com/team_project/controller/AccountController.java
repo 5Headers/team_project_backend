@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project_5headers.com.team_project.dto.ApiRespDto;
 import project_5headers.com.team_project.dto.account.ChangePasswordReqDto;
+import project_5headers.com.team_project.dto.account.ChangeProfileImgReqDto;
 import project_5headers.com.team_project.dto.account.ResetPasswordReqDto;
 import project_5headers.com.team_project.security.model.PrincipalUser;
 import project_5headers.com.team_project.service.AccountService;
@@ -17,8 +18,6 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
-
-
     // 비밀번호 변경
     @PostMapping("/change/password")
     public ResponseEntity<?> changePassword(
@@ -27,7 +26,8 @@ public class AccountController {
         ApiRespDto<?> response = accountService.changePassword(changePasswordReqDto, principalUser);
         return ResponseEntity.ok(response);
     }
-    //비밀번호 찾기
+
+    // 비밀번호 찾기 (임시 비밀번호 발급)
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordReqDto resetPasswordReqDto) {
         ApiRespDto<?> response = accountService.resetPassword(resetPasswordReqDto);
@@ -43,7 +43,12 @@ public class AccountController {
         return ResponseEntity.ok(response);
     }
 
-
-
-
+    // ✅ 프로필 이미지 변경
+    @PostMapping("/profile")
+    public ResponseEntity<?> changeProfileImg(
+            @RequestBody ChangeProfileImgReqDto changeProfileImgReqDto,
+            @AuthenticationPrincipal PrincipalUser principalUser) {
+        ApiRespDto<?> response = accountService.changeProfileImg(changeProfileImgReqDto, principalUser);
+        return ResponseEntity.ok(response);
+    }
 }

@@ -1,14 +1,16 @@
 package project_5headers.com.team_project.security.filter;
 
 import io.jsonwebtoken.Claims;
-import jakarta.servlet.*;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 import project_5headers.com.team_project.repository.UserRepository;
 import project_5headers.com.team_project.security.jwt.JwtUtils;
 import project_5headers.com.team_project.security.model.PrincipalUser;
@@ -17,50 +19,26 @@ import java.io.IOException;
 import java.util.List;
 
 @Component
-public class JwtAuthenticationFilter implements Filter {
+@RequiredArgsConstructor
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwtUtils jwtUtils;
-
-    @Autowired
-    private UserRepository userRepository;
+    private final JwtUtils jwtUtils;
+    private final UserRepository userRepository;
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain chain) throws ServletException, IOException {
 
-        HttpServletRequest req = (HttpServletRequest) request;
-        HttpServletResponse res = (HttpServletResponse) response;
-        String path = req.getRequestURI();
-
+        String path = request.getRequestURI();
         System.out.println("🔎 JwtAuthenticationFilter: 요청 path = " + path);
 
-        // 회원가입/로그인/지도 API/OPTIONS 요청은 인증 제외
-        if (path.startsWith("/auth/signup") ||
-                path.startsWith("/auth/signin") ||
-                path.startsWith("/auth/check-username") ||
-                path.startsWith("/auth/check-email") ||
-                path.startsWith("/auth/reset-password") ||
-                path.startsWith("/auth/find-id") ||
-                path.startsWith("/account/find-id") ||
-                path.startsWith("account/reset-password")||
-                path.startsWith("/api/maps") ||
-                path.startsWith("/oauth2/") ||
-                path.startsWith("/error") ||
-                path.startsWith("/login") ||
-                "OPTIONS".equalsIgnoreCase(req.getMethod())) {
-
-            System.out.println("✅ JwtAuthenticationFilter: 인증 제외 처리됨 → " + path);
-            chain.doFilter(request, response);
-            return;
-        }
-
         // ===== Authorization 헤더 검사 =====
-        String authHeader = req.getHeader("Authorization");
+        String authHeader = request.getHeader("Authorization");
 
-        if (!jwtUtils.isBearer(authHeader)) {
-            // 헤더가 없거나 형식 오류 → 401 반환
-            res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authorization header missing or invalid");
+        if (authHeader == null || !jwtUtils.isBearer(authHeader)) {
+            // 토큰 필요 없는 엔드포인트는 SecurityConfig에서 permitAll 로 제어함
+            chain.doFilter(request, response);
             return;
         }
 
@@ -68,8 +46,7 @@ public class JwtAuthenticationFilter implements Filter {
 
         try {
             if (!jwtUtils.validateToken(token)) {
-                // 토큰 유효하지 않음 → 401 반환
-                res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
                 return;
             }
 
@@ -99,7 +76,7 @@ public class JwtAuthenticationFilter implements Filter {
 
         } catch (RuntimeException e) {
             e.printStackTrace();
-            res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token validation error");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token validation error");
             return;
         }
 

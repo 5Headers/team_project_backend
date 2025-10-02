@@ -149,8 +149,10 @@ public class AuthService {
             }
 
             // 3️⃣ OAuth2 계정 삭제 (존재할 경우)
-            Optional<OAuth2User> oauthUser = oauth2UserRepository.getByUserId(userId);
-            oauthUser.ifPresent(u -> oauth2UserRepository.deleteByUserId(userId));
+            List<OAuth2User> oauthUsers = oauth2UserRepository.getByUserIdList(userId);
+            if (!oauthUsers.isEmpty()) {
+                oauth2UserRepository.deleteByUserId(userId);
+            }
 
             // 4️⃣ 사용자 권한 삭제
             userRoleRepository.removeRolesByUserId(userId);
