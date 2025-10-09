@@ -185,7 +185,8 @@ git clone https://github.com/5Headers/team_project_backend.git
 
 
 
-
+## ERD 다이어그램
+![ERD Diagram](images/ERD.png)
 
 
 
