@@ -1,4 +1,4 @@
-# ⚙️ 5Headers Back-End — GPT 기반 맞춤형 컴퓨터 견적 서비스
+# ⚙️ 5Headers — GPT 기반 맞춤형 컴퓨터 견적 서비스
 
 [![Build](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3+-brightgreen?logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
@@ -50,81 +50,33 @@
 
 ## 📦 주요 의존성 (`pom.xml` 기준)
 
-```xml
-<!-- Web, Security, Mail, JWT -->
-<dependencies>
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-web</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-security</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-oauth2-client</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-mail</artifactId>
-    </dependency>
+프로젝트에서 사용한 주요 라이브러리/프레임워크 목록입니다.
 
-    <!-- MyBatis -->
-    <dependency>
-        <groupId>org.mybatis.spring.boot</groupId>
-        <artifactId>mybatis-spring-boot-starter</artifactId>
-        <version>3.0.5</version>
-    </dependency>
-
-    <!-- JWT -->
-    <dependency>
-        <groupId>io.jsonwebtoken</groupId>
-        <artifactId>jjwt-api</artifactId>
-        <version>0.11.5</version>
-    </dependency>
-    <dependency>
-        <groupId>io.jsonwebtoken</groupId>
-        <artifactId>jjwt-impl</artifactId>
-        <version>0.11.5</version>
-        <scope>runtime</scope>
-    </dependency>
-    <dependency>
-        <groupId>io.jsonwebtoken</groupId>
-        <artifactId>jjwt-jackson</artifactId>
-        <version>0.11.5</version>
-        <scope>runtime</scope>
-    </dependency>
-
-    <!-- MySQL -->
-    <dependency>
-        <groupId>com.mysql</groupId>
-        <artifactId>mysql-connector-j</artifactId>
-        <scope>runtime</scope>
-    </dependency>
-
-    <!-- Dev / Utility -->
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-devtools</artifactId>
-        <scope>runtime</scope>
-    </dependency>
-    <dependency>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok</artifactId>
-        <optional>true</optional>
-    </dependency>
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-test</artifactId>
-        <scope>test</scope>
-    </dependency>
-</dependencies>
+- `com.mysql:mysql-connector-j`
+- `io.jsonwebtoken:jjwt-api`
+- `io.jsonwebtoken:jjwt-impl`
+- `io.jsonwebtoken:jjwt-jackson`
+- `org.locationtech.jts:jts-core`
+- `org.mybatis.spring.boot:mybatis-spring-boot-starter`
+- `org.mybatis.spring.boot:mybatis-spring-boot-starter-test`
+- `org.projectlombok:lombok`
+- `org.springdoc:springdoc-openapi-starter-webmvc-ui`
+- `org.springframework.boot:spring-boot-devtools`
+- `org.springframework.boot:spring-boot-starter-aop`
+- `org.springframework.boot:spring-boot-starter-data-redis`
+- `org.springframework.boot:spring-boot-starter-mail`
+- `org.springframework.boot:spring-boot-starter-oauth2-client`
+- `org.springframework.boot:spring-boot-starter-security`
+- `org.springframework.boot:spring-boot-starter-test`
+- `org.springframework.boot:spring-boot-starter-thymeleaf`
+- `org.springframework.boot:spring-boot-starter-validation`
+- `org.springframework.boot:spring-boot-starter-web`
+- `org.springframework.security:spring-security-test`
+- `org.thymeleaf.extras:thymeleaf-extras-springsecurity6`
 
 
 
 
-```
  ## 🏗️ 프로젝트 구조
 ```
 src/
@@ -143,9 +95,18 @@ src/
  ┗ test/
      ┗ java/...         # 단위 및 통합 테스트
 
+```
+---
+## 🛠️ 실행 방법
 
+```bash
+# 1. Git clone
+git clone https://github.com/5Headers/team_project_backend.git
 
+# 2. DB 설정 (application.yml 또는 application.properties)
 
+# 3. 빌드 및 실행
+./mvnw spring-boot:run
 ```
 
 ## 📑 API 명세
@@ -222,18 +183,8 @@ src/
 
 ---
 
-## ⚙️ 설정 예시 (application.yml / properties)
 
-```yaml
-spring.application.name: team_project_backend
-spring.datasource.url: jdbc:mysql://localhost:3306/project
-spring.datasource.username: 
-spring.datasource.password: 
-spring.datasource.driver-class-name: com.mysql.cj.jdbc.Driver
 
-mybatis.mapper-locations: mappers/*.xml
-
-jwt.secret:
 
 
 
