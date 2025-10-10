@@ -227,31 +227,6 @@ git clone https://github.com/5Headers/team_project_backend.git
 ## 프론트엔드와 연결 (사진 첨부)
 https://github.com/5Headers/team_project_frontend
 
-----
-## 메인 화면
-<img width="1407" height="717" alt="캡처" src="https://github.com/user-attachments/assets/cf24c080-d297-4560-a587-1c4de14edd72" />
 
-----
-## 사용자 인증 화면 (로그인)
-<img width="1398" height="709" alt="image" src="https://github.com/user-attachments/assets/72e32a4b-5704-4778-8190-4691230ab035" />
 
-----
-## 사용자 인증 화면 (ID/비밀번호 찾기)
-<img width="1389" height="666" alt="image" src="https://github.com/user-attachments/assets/df81ca2d-022e-4f6d-9c28-58af2384470f" />
-
-----
-## 사용자 인증 화면 (비밀번호 변경)
-<img width="1406" height="719" alt="image" src="https://github.com/user-attachments/assets/d4356e05-c25d-4bc2-b53e-c41fe99950b8" />
-
-----
-## 사용자 인증 화면 (회원 탈퇴)
-<img width="1407" height="720" alt="image" src="https://github.com/user-attachments/assets/ef0194a3-2421-4ed1-a423-6ccd96b08827" />
-
-----
-## 컴퓨터 부품 견적 GPT 입력 화면
-<img width="1396" height="680" alt="image" src="https://github.com/user-attachments/assets/6538d520-9b65-4c37-ab87-622369b26864" />
-
-----
-## 사용자가 저장한 북마크 견적 리스트 화면
-<img width="1396" height="677" alt="image" src="https://github.com/user-attachments/assets/02030125-7403-46d1-85c2-dce1e3da4278" />
 
