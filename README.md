@@ -229,4 +229,54 @@ https://github.com/5Headers/team_project_frontend
 
 
 
+## 기능 세부 설명 (동영상 첨부)
+
+### 사용자 인증 화면에서 회원가입하여 계정을 연동하기 
+https://github.com/user-attachments/assets/3cf47a8d-bc56-412d-b3c9-22dd4cbd66a0
+
+
+### 조건 입력하여 GPT로 맞춤 견적 출력하기
+https://github.com/user-attachments/assets/b453f5ad-62c0-428a-aef8-89866feac506
+
+
+### 온라인 구매를 하는 경우
+https://github.com/user-attachments/assets/5a560f58-088f-48f8-be47-bde2b5a3d68c
+
+
+### 오프라인 구매를 하는 경우
+https://github.com/user-attachments/assets/59517769-cbca-4fe8-937b-3a70236af36d
+
+
+### 견적을 북마크하여 마이페이지에 저장하기
+https://github.com/user-attachments/assets/b1765046-840f-4223-b2d9-452d1eb3139c
+
+
+### 견적 기록보기
+https://github.com/user-attachments/assets/a76debbb-0637-4d65-8a99-59eb19b7363e
+
+
+### 프로필 사진 변경하기
+https://github.com/user-attachments/assets/3d5654ba-7cdf-48be-bab2-529f0e36eb35
+
+
+### 계정 찾기
+https://github.com/user-attachments/assets/c0869e9f-f5e6-4789-8601-42b229bbcb1a
+
+
+### 비밀번호 변경하기
+https://github.com/user-attachments/assets/c2608b90-5da5-42d1-8ecf-a14f792a8fb5
+
+
+### 회원탈퇴
+https://github.com/user-attachments/assets/bcebc8d4-81ef-4ea6-89fe-47cc012c4171
+
+
+
+
+
+
+
+
+
+
 
