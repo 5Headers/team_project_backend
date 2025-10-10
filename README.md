@@ -233,27 +233,40 @@ https://github.com/5Headers/team_project_frontend
 
 ----
 ## 사용자 인증 화면 (로그인)
+Spring Security와 OAuth2 소셜 로그인 기능을 구현하여 사용자 인증을 처리하여 회원가입과 로그인 기능을 구현하였습니다.
 <img width="1398" height="709" alt="image" src="https://github.com/user-attachments/assets/72e32a4b-5704-4778-8190-4691230ab035" />
 
 ----
 ## 사용자 인증 화면 (ID/비밀번호 찾기)
+사용자가 이메일과 비밀번호 분실 시 이메일 인증 코드를 발송하여 비밀번호 재설정을 할 수 있도록 구현했습니다.
 <img width="1389" height="666" alt="image" src="https://github.com/user-attachments/assets/df81ca2d-022e-4f6d-9c28-58af2384470f" />
 
 ----
 ## 사용자 인증 화면 (비밀번호 변경)
+Spring Security 환경에서 기존 비밀번호 검증 후 새로운 비밀번호로 갱신하는 기능을 구현했습니다.
+비밀번호는 BCrypt로 암호화해 저장하며, 입력값 검증을 통해 안정성을 높였습니다.
 <img width="1406" height="719" alt="image" src="https://github.com/user-attachments/assets/d4356e05-c25d-4bc2-b53e-c41fe99950b8" />
 
 ----
 ## 사용자 인증 화면 (회원 탈퇴)
-<img width="1407" height="720" alt="image" src="https://github.com/user-attachments/assets/ef0194a3-2421-4ed1-a423-6ccd96b08827" />
+회원 탈퇴 시 사용자의 계정이 즉시 삭제되며, 관련 데이터는 데이터베이스에서도 완전히 제거되도록 구현했습니다.
+탈퇴 절차에 별도 보류 기간 없이 실시간으로 DB에서 영구 삭제되도록 처리하였으며, 탈퇴 이후에는 로그인 및 서비스 이용이 불가능합니다.
+<img width="1407" height="720" alt
+ ="image" src="https://github.com/user-attachments/assets/ef0194a3-2421-4ed1-a423-6ccd96b08827" />
 
 ----
 ## 컴퓨터 부품 견적 GPT 입력 화면
+GPT API와 서버 로직을 연동하여 사용자가 입력한 용도와 가격 정보를 바탕으로 최적 사양을 추천합니다.
+추천 결과에는 각 부품의 가격, 온라인/오프라인 구매 정보가 포함되며, 실시간 데이터 조회가 가능합니다.
 <img width="1396" height="680" alt="image" src="https://github.com/user-attachments/assets/6538d520-9b65-4c37-ab87-622369b26864" />
 
 ----
 ## 사용자가 저장한 북마크 견적 리스트 화면
+GPT API를 활용해 사용자가 입력한 용도와 예산에 맞는 최적의 컴퓨터 부품 견적을 추천합니다.
+추천된 견적은 북마크를 통해 저장할 수 있으며, DB 연동으로 언제든 조회하고 세부 부품 정보까지 확인할 수 있습니다.
+이를 통해 사용자는 효율적으로 맞춤형 부품을 관리하고 구매 계획을 세울 수 있습니다.
 <img width="1396" height="677" alt="image" src="https://github.com/user-attachments/assets/02030125-7403-46d1-85c2-dce1e3da4278" />
+
 
 
 
