@@ -15,6 +15,7 @@
 > **5Headers 팀의 백엔드 서버**입니다.  
 > Spring Boot + MySQL + REST API 기반으로 프론트엔드(Vite + React)와 통신합니다.
 
+
 ---
 
 ## 🚀 주요 기능
@@ -221,3 +222,7 @@ git clone https://github.com/5Headers/team_project_backend.git
 - **원인**: GPT API 응답이 단순 텍스트로 와서, 여러 항목을 DB에 넣거나 프론트로 전달하기 어려움.
 - **해결 방법**: API 응답을 JSON 형식으로 변환 후 파싱하도록 로직 수정하여, 각 항목을 DB 및 프론트에서 정확히 처리할 수 있도록 구현.
 
+
+----
+## 프론트엔드와 연결 (시연 영상 첨부)
+https://github.com/5Headers/team_project_frontend
