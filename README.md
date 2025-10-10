@@ -224,51 +224,39 @@ git clone https://github.com/5Headers/team_project_backend.git
 
 
 ----
-## 프론트엔드와 연결 (사진 첨부)
+## 프론트엔드와 연결 (동영상 첨부)
 https://github.com/5Headers/team_project_frontend
 
 
+## 메인 화면
+<img width="1407" height="717" alt="캡처" src="https://github.com/user-attachments/assets/cf24c080-d297-4560-a587-1c4de14edd72" />
 
-## 기능 세부 설명 (동영상 첨부)
+----
+## 사용자 인증 화면 (로그인)
+<img width="1398" height="709" alt="image" src="https://github.com/user-attachments/assets/72e32a4b-5704-4778-8190-4691230ab035" />
 
-### 사용자 인증 화면에서 회원가입하여 계정을 연동하기 
-https://github.com/user-attachments/assets/3cf47a8d-bc56-412d-b3c9-22dd4cbd66a0
+----
+## 사용자 인증 화면 (ID/비밀번호 찾기)
+<img width="1389" height="666" alt="image" src="https://github.com/user-attachments/assets/df81ca2d-022e-4f6d-9c28-58af2384470f" />
 
+----
+## 사용자 인증 화면 (비밀번호 변경)
+<img width="1406" height="719" alt="image" src="https://github.com/user-attachments/assets/d4356e05-c25d-4bc2-b53e-c41fe99950b8" />
 
-### 조건 입력하여 GPT로 맞춤 견적 출력하기
-https://github.com/user-attachments/assets/b453f5ad-62c0-428a-aef8-89866feac506
+----
+## 사용자 인증 화면 (회원 탈퇴)
+<img width="1407" height="720" alt="image" src="https://github.com/user-attachments/assets/ef0194a3-2421-4ed1-a423-6ccd96b08827" />
 
+----
+## 컴퓨터 부품 견적 GPT 입력 화면
+<img width="1396" height="680" alt="image" src="https://github.com/user-attachments/assets/6538d520-9b65-4c37-ab87-622369b26864" />
 
-### 온라인 구매를 하는 경우
-https://github.com/user-attachments/assets/5a560f58-088f-48f8-be47-bde2b5a3d68c
-
-
-### 오프라인 구매를 하는 경우
-https://github.com/user-attachments/assets/59517769-cbca-4fe8-937b-3a70236af36d
-
-
-### 견적을 북마크하여 마이페이지에 저장하기
-https://github.com/user-attachments/assets/b1765046-840f-4223-b2d9-452d1eb3139c
-
-
-### 견적 기록보기
-https://github.com/user-attachments/assets/a76debbb-0637-4d65-8a99-59eb19b7363e
-
-
-### 프로필 사진 변경하기
-https://github.com/user-attachments/assets/3d5654ba-7cdf-48be-bab2-529f0e36eb35
+----
+## 사용자가 저장한 북마크 견적 리스트 화면
+<img width="1396" height="677" alt="image" src="https://github.com/user-attachments/assets/02030125-7403-46d1-85c2-dce1e3da4278" />
 
 
-### 계정 찾기
-https://github.com/user-attachments/assets/c0869e9f-f5e6-4789-8601-42b229bbcb1a
 
-
-### 비밀번호 변경하기
-https://github.com/user-attachments/assets/c2608b90-5da5-42d1-8ecf-a14f792a8fb5
-
-
-### 회원탈퇴
-https://github.com/user-attachments/assets/bcebc8d4-81ef-4ea6-89fe-47cc012c4171
 
 
 
